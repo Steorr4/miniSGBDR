@@ -101,18 +101,18 @@ public class DiskManager {
 		pagesLibres.add(pageId);
 	}
 	
-	public void SaveState() {
-		 FileOuputStream f= new FileOutputStream("dm.save");
-		 ObjectOutputStream s= new ObjectOutputStream("pageId.obj");
-		 s.writeObject(pagesLibres);
-		 s.flush();
-		 
-	}
-	
-	public void LoadState() {
-		FileInputStream f=new FileInputStream("pageId.obj");
-		ObjectInputStream s=new ObjectInputStream(f);
-		s.readObject();
-	}
+//	public void SaveState() {
+//		 FileOuputStream f= new FileOutputStream("dm.save");
+//		 ObjectOutputStream s= new ObjectOutputStream("pageId.obj");
+//		 s.writeObject(pagesLibres);
+//		 s.flush();
+//
+//	}
+//
+//	public void LoadState() {
+//		FileInputStream f=new FileInputStream("pageId.obj");
+//		ObjectInputStream s=new ObjectInputStream(f);
+//		s.readObject();
+//	}
 	
 }

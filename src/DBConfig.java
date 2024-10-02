@@ -1,72 +1,66 @@
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.*;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
+//JAVA Imports
+import java.beans.ConstructorProperties;
+import java.io.*;
+
+//Jackson Imports
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 public class DBConfig {
-	private String dbpath; //chemin vers la base de données
-	private int pagesize;
-	private int dm_maxfilesize;
+	private String dbpath; // Chemin vers la base de données
+	private int pagesize; // Taille alloue a une page
+	private int dm_maxfilesize;	// Taille maximum d'un fichier .rsbd
 
+	//Constructor
+	@ConstructorProperties({"dbpath", "pagesize", "dm_maxfilesize"})
+	/* Pour que le mapper comprenne comment construire une instance */
 	public DBConfig(String dbpath,int pagesize, int dm_maxfilesize) {
 		this.dbpath = dbpath;
-		this.pagesize=pagesize;
-		this.dm_maxfilesize=dm_maxfilesize;
-		
-	}
-	
-	/*public static DBConfig LoadDBConfig(String fichier_config) throws ParseException{
-		try {
-		
-		Object o=new JSONParser().parse(new FileReader(fichier_config));
-		JSONObject j= (JSONObject) o;
-		String path=(String)j.get("path");
-		return new DBConfig(path);
-		
-		}
-		catch(IOException e) {
-			System.err.println("erreur de lecture" );
-		}
-		return null;
-		
-	}*/
-	public static DBConfig LoadDBConfig(String fichier_config) {
-		try {
-			FileReader fr=new FileReader(fichier_config);
-			BufferedReader br= new BufferedReader((fr));
-			String str=br.readLine();
-			int nbp=Integer.parseInt(br.readLine());
-			int dm=Integer.parseInt(br.readLine());
-			br.close();
-			return new DBConfig(str,nbp,dm);
-		}
-		catch(IOException e) {
-			System.err.println("erreur");
-		}
-		
-		return null;
-	}
-	
-
-
-
-	
-	public void afficher() {
-		System.out.println("le chemin: "+dbpath);
+		this.pagesize = pagesize;
+		this.dm_maxfilesize = dm_maxfilesize;
 	}
 
+	//Main Method
+	public static DBConfig LoadDBConfig(String fic_config) throws FileNotFoundException, JsonParseException,
+			JsonMappingException, IOException{
+
+		ObjectMapper mapper = new ObjectMapper(); // Mapper qui permet de lire un fichier .json
+		InputStream is = new FileInputStream(fic_config); // InputStream
+
+		return mapper.readValue(is, DBConfig.class); // Creer une instance de DBConfig en lisant sur l'inputStream et la renvois
+	}
+
+	//Getters & Setters
 	public String getDbpath() {
 		return dbpath;
 	}
-	
 	public int getPagesize() {
 		return pagesize;
 	}
-
-	
 	public int getDm_maxfilesize() {
 		return dm_maxfilesize;
 	}
-	
+	public void setDbpath(String dbpath) {
+		this.dbpath = dbpath;
+	}
+	public void setPagesize(int pagesize) {
+		this.pagesize = pagesize;
+	}
+	public void setDm_maxfilesize(int dm_maxfilesize) {
+		this.dm_maxfilesize = dm_maxfilesize;
+	}
+
+	//ToString
+	@Override
+	public String toString() {
+		return "DBConfig : {" +
+				"dbpath='" + dbpath + '\'' +
+				", pagesize=" + pagesize +
+				", dm_maxfilesize=" + dm_maxfilesize +
+				'}';
+	}
 }

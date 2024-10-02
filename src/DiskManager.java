@@ -26,7 +26,7 @@ public class DiskManager {
 		}
 
 		//Si il n'y a pas de page libre alors on doit creer un nouveau fichier avec de nouvelles pages.
-		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsbd");
+		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsdb");
 		f.createNewFile(); // Creation d'un nouveau fichier
 		int nbPages=config.getDm_maxfilesize()/config.getPagesize(); // Calcul du nb de page par fichiers
 		for(int i=1;i<nbPages;i++) pagesLibres.add(new PageId(nbFichiers,i)); // Remplissage de l'array avec les nouvelles pages libres
@@ -37,50 +37,41 @@ public class DiskManager {
 	
 	
 	public void ReadPage(PageId pageId,ByteBuffer buff)  {
-		int nbF=pageId.getFileIdx();
-		String nomFichier="F"+nbF+".rsdb";
+		String pathFichier=config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb"; // Recupere le nom du fichier grace a l'id du pageid
+
 		try {
-			RandomAccessFile raf=new RandomAccessFile(nomFichier,"r");
-			raf.seek(pageId.getPageIdx()*config.getPagesize());
-			for(int i=0;i<config.getPagesize();i++) {
-				buff.put(raf.readByte());
-			}
-			
-			
+
+			RandomAccessFile raf = new RandomAccessFile(pathFichier,"r");
+			raf.seek(pageId.getPageIdx()*config.getPagesize()); // Se pose au debut de la page dans le fichier
+			for(int i=0;i<config.getPagesize();i++) buff.put(raf.readByte()); // Copie toute la page dans le tampon
+
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
-	
-	
+
 	public void WritePage(PageId pageId,ByteBuffer buff) {
-		int nbF=pageId.getFileIdx();
-		String nomFichier="F"+nbF+".rsdb";
+		String pathFichier= config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
+
 		try {
-			RandomAccessFile raf=new RandomAccessFile(nomFichier,"w");
+			RandomAccessFile raf=new RandomAccessFile(new File(pathFichier),"rw");
 			raf.seek(pageId.getPageIdx()*config.getPagesize());
-			for(int i=0;i<config.getPagesize();i++) {
-				raf.write(buff.get(i));
-			}
-			
-			
+			for(int i=0; i< config.getPagesize(); i++) raf.write(buff.get());
+
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
 	public void DeallocPage(PageId pageId) {
-		pagesLibres.add(pageId);
+		pagesLibres.add(pageId); // Desalloue une page en la rendant disponible a la reecriture
+		// (Le traitement du fait que l'on ne peut pas aller lire une page desalloue se fera surement sur une couche + haute)
 	}
 	
 //	public void SaveState() {

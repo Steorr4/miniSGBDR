@@ -3,12 +3,9 @@ import java.beans.ConstructorProperties;
 import java.io.*;
 
 //Jackson Imports
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 public class DBConfig {
 	private String dbpath; // Chemin vers la base de données

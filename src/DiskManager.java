@@ -1,56 +1,38 @@
+//JAVA Imports
 import java.nio.ByteBuffer;
-import java.util.Vector;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.RandomAccessFile;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.io.*;
 
 public class DiskManager {
-	private DBConfig config;
-	private Vector<PageId> pagesLibres;
-	private int nbFichiers;
-	
+	private DBConfig config; // Instance de la config
+	private ArrayList<PageId> pagesLibres; // Array de pages libres attendant d'etre allouees
+	private int nbFichiers; // Nombre de fichier deja crees
+
+	//Constructor
 	public DiskManager(DBConfig dbConfig) {
 		config=dbConfig;
-		pagesLibres= new Vector<PageId>();
+		pagesLibres= new ArrayList<PageId>();
 		nbFichiers=0;
 	}
 	
-	
-	public PageId AllocPage() {
-		if(pagesLibres.size()!=0) {
-			PageId libre=pagesLibres.get(0);
-			pagesLibres.remove(0);
-			return libre;
+
+	//Methods
+	public PageId AllocPage() throws NullPointerException, IOException{
+
+		if(!pagesLibres.isEmpty()) { //Si il y a un page libre, alors on retourne la page en question
+			PageId pid=pagesLibres.getFirst();
+			pagesLibres.removeFirst();
+			return pid;
 		}
-		try {
-			 
-            File f = new File(config.getDbpath()+"BinData\\F"+(nbFichiers)+".rsdb");
-            
-            if (f.createNewFile())
-                System.out.println("File created");
-            else
-                System.out.println("File already exists");
-            
-            int nbpages=config.getDm_maxfilesize()/config.getPagesize();
-            for(int i=1;i<nbpages;i++) pagesLibres.add(new PageId(nbFichiers,i));
-            
-            PageId pid=new PageId(nbFichiers,0);
-            nbFichiers++;
-            return pid;
-            
-        }
-        catch (Exception e) {
-            System.err.println(e);
-        }
-		return null;
-		
-		
-		
+
+		//Si il n'y a pas de page libre alors on doit creer un nouveau fichier avec de nouvelles pages.
+		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsbd");
+		f.createNewFile(); // Creation d'un nouveau fichier
+		int nbPages=config.getDm_maxfilesize()/config.getPagesize(); // Calcul du nb de page par fichiers
+		for(int i=1;i<nbPages;i++) pagesLibres.add(new PageId(nbFichiers,i)); // Remplissage de l'array avec les nouvelles pages libres
+		PageId pid=new PageId(nbFichiers,0); // On garde la premiere page (0) du nouveau ficher
+		nbFichiers++; // On incremente le nb de fichier
+		return pid; // On renvoit l'id de la nouvelle page
 	}
 	
 	
@@ -114,5 +96,5 @@ public class DiskManager {
 //		ObjectInputStream s=new ObjectInputStream(f);
 //		s.readObject();
 //	}
-	
+
 }

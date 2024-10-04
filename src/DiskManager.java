@@ -74,18 +74,34 @@ public class DiskManager {
 		// (Le traitement du fait que l'on ne peut pas aller lire une page desalloue se fera surement sur une couche + haute)
 	}
 	
-//	public void SaveState() {
-//		 FileOuputStream f= new FileOutputStream("dm.save");
-//		 ObjectOutputStream s= new ObjectOutputStream("pageId.obj");
-//		 s.writeObject(pagesLibres);
-//		 s.flush();
-//
-//	}
-//
-//	public void LoadState() {
-//		FileInputStream f=new FileInputStream("pageId.obj");
-//		ObjectInputStream s=new ObjectInputStream(f);
-//		s.readObject();
-//	}
+	public void SaveState() { //TODO a tester plus en profondeur
+		try {
+			FileOutputStream fos = new FileOutputStream(config.getDbpath()+"/dm.save");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(pagesLibres);
+			oos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void LoadState() {
+		try {
+			FileInputStream fis = new FileInputStream(config.getDbpath()+"/dm.save");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			this.pagesLibres = (ArrayList<PageId>) ois.readObject();
+		}catch (FileNotFoundException e){
+			e.printStackTrace();
+		}catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+
+	}
+
 
 }

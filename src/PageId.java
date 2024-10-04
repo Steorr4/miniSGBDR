@@ -1,4 +1,8 @@
-public class PageId {
+//JAVA Imports
+import java.io.Serializable;
+import java.util.Objects;
+
+public class PageId implements Serializable {
 	private int fileIdx; // ID d'un fichier .rsbd
 	private int pageIdx; // ID d'une page d'un fichier .rsbd
 
@@ -7,7 +11,6 @@ public class PageId {
 		this.fileIdx=fileIdx;
 		this.pageIdx=pageIdx;
 	}
-
 
 	//Getters
 	public int getFileIdx() {
@@ -25,4 +28,12 @@ public class PageId {
 				", pageIdx=" + pageIdx +
 				'}';
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PageId pageId)) return false;
+        return fileIdx == pageId.fileIdx && pageIdx == pageId.pageIdx;
+	}
+
 }

@@ -5,7 +5,7 @@ import java.util.List;
 public class BufferManager {
     private DBConfig config;
     private DiskManager dm;
-    private List<CustomBuffer> bufferList;
+    protected List<CustomBuffer> bufferList;
     private int time;
 
     //Constructor
@@ -16,27 +16,41 @@ public class BufferManager {
         this.time = 0;
     }
 
-    public CustomBuffer getPage(PageId pid){
+    public CustomBuffer getPage(PageId pid) throws FAOException{
+
+        int indice = 0;
 
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
                 cb.setPin_count(cb.getPin_count()+1);
                 return cb;
             }
+            indice++;
         }
-        for (int i = 0; i < config.getBm_buffercount(); i++ ){
-            if (bufferList.get(i)==null) {
-                CustomBuffer cb = new CustomBuffer(pid, config);
-                dm.ReadPage(pid,cb.getBb());
-                bufferList.add(cb);
-                return cb;
-            }
+
+
+//        for (int i = 0; i < config.getBm_buffercount(); i++ ){
+//            if (bufferList.get(i)==null) {
+//                CustomBuffer cb = new CustomBuffer(pid, config);
+//                dm.ReadPage(pid,cb.getBb());
+//                bufferList.add(cb);
+//                return cb;
+//            }
+//        } //TODO a supprimer (modifier juste en dessous)
+
+        if (indice<config.getBm_buffercount()-1){
+            CustomBuffer cb = new CustomBuffer(pid, config);
+            dm.ReadPage(pid,cb.getBb());
+            bufferList.add(cb);
+            return cb;
         }
+
+
         CustomBuffer candidat = null;
         if (config.getBm_policy().equals("LRU")) {
             for (int i = 0; i < config.getBm_buffercount(); i++) {
                 if (bufferList.get(i).getPin_count()==0 && bufferList.get(i).getTime() != 0){
-                    if (candidat==null) candidat = bufferList.get(i);
+                    if (candidat!=null) candidat = bufferList.get(i);
                     else if (candidat.getTime() > bufferList.get(i).getTime()) candidat = bufferList.get(i);
                 }
 
@@ -49,11 +63,17 @@ public class BufferManager {
                 }
             }
         }
+
+        if(candidat.getPin_count()!=0) throw new FAOException();
+
         if(candidat.isDirty_flag()) dm.WritePage(candidat.getPid(), candidat.getBb());
         CustomBuffer cb = new CustomBuffer(pid, config);
-        bufferList.set(bufferList.indexOf(candidat), cb);
+//        bufferList.set(bufferList.indexOf(candidat), cb);
+        bufferList.remove(candidat);
+        bufferList.add(cb);
         return cb;
     }//TODO: tester et finir la fonction
+
 
     public void freePage(PageId pid, boolean valdirty){
         for(CustomBuffer buff : bufferList){

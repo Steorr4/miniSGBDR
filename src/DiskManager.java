@@ -41,9 +41,14 @@ public class DiskManager {
 
 		try {
 
-			RandomAccessFile raf = new RandomAccessFile(pathFichier,"r");
-			raf.seek(pageId.getPageIdx()*config.getPagesize()); // Se pose au debut de la page dans le fichier
-			for(int i=0;i<config.getPagesize();i++) buff.put(raf.readByte()); // Copie toute la page dans le tampon
+			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
+			raf.seek(pageId.getPageIdx() * config.getPagesize()); // Se pose au debut de la page dans le fichier
+
+			int i = 0;
+			while(i<config.getPagesize() && i<(raf.length()-pageId.getPageIdx()*config.getPagesize())) {
+				buff.put(raf.readByte());
+				i++;
+			} // Copie toute la page dans le tampon
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

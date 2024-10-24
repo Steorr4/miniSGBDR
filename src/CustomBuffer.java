@@ -58,4 +58,15 @@ public class CustomBuffer {
     public void setConfig(DBConfig config) {
         this.config = config;
     }
+
+    @Override
+    public String toString() {
+        return "CustomBuffer{" +
+                "bb=" + bb +
+                ", pid=" + pid +
+                ", pin_count=" + pin_count +
+                ", dirty_flag=" + dirty_flag +
+                ", time=" + time +
+                '}';
+    }
 }

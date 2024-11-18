@@ -1,6 +1,6 @@
 #!/bin/bash
 compile(){
-javac -d bin src/Test.java src/DBConfig.java src/DiskManager.java src/PageId.java 
+javac -d bin src/*.java
 echo "class files compiled"
 }
 

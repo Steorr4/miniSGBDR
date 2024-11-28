@@ -3,7 +3,7 @@ package fr.upc.mi.bdda.Relations;
 public class TypeNonParam extends Type {
     ETypeNonParam type;
 
-    public enum ETypeNonParam{
+    public static enum ETypeNonParam{
         INT,
         REAL
     }

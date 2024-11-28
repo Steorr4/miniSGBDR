@@ -4,6 +4,10 @@ public class ColInfo {
     private String nomCol;
     private Type typeCol;
 
+    public ColInfo(String nomCol,Type typeCol){
+        this.nomCol=nomCol;
+        this.typeCol=typeCol;
+    }
     //Getters & Setters
     public String getNomCol() {
         return nomCol;

@@ -3,7 +3,7 @@ package fr.upc.mi.bdda.Relations;
 public class TypeParam extends Type {
     ETypeParam type;
 
-    public enum ETypeParam{
+    public static enum ETypeParam{
         CHAR,
         VARCHAR
     }

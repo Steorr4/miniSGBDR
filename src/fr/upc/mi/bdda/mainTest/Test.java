@@ -1,6 +1,13 @@
 package fr.upc.mi.bdda.mainTest;//Jackson Imports
 import fr.upc.mi.bdda.BufferManager.*;
 import fr.upc.mi.bdda.DiskManager.*;
+import fr.upc.mi.bdda.Relations.*;
+import fr.upc.mi.bdda.Relations.Record;
+
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 //JAVA Imports
 
@@ -57,7 +64,7 @@ public class Test {
 //            e.printStackTrace();
 //        }
 
-
+    ///TEST BUFFER MANAGER
         try{
 
             DBConfig config = DBConfig.LoadDBConfig("src/config.json");
@@ -69,7 +76,7 @@ public class Test {
             PageId p3 = dm.AllocPage();
             PageId p4 = dm.AllocPage();
             bm.getPage(p1);
-            bm.getPage(p2);
+            CustomBuffer cb=bm.getPage(p2);
             bm.getPage(p3);
             System.out.println(bm.getPage(p1)); //--
 
@@ -99,8 +106,70 @@ public class Test {
                 System.out.println(elem);
             }
 
+
+            ///TEST RELATION
+            List<ColInfo> colonne=new ArrayList<>();
+            colonne.add(new ColInfo("nom", new TypeParam(10, TypeParam.ETypeParam.VARCHAR)));
+            colonne.add(new ColInfo("prenom", new TypeParam(10, TypeParam.ETypeParam.VARCHAR)));
+            colonne.add(new ColInfo("age", new TypeNonParam(TypeNonParam.ETypeNonParam.INT)));
+
+            Relation relation = new Relation("nina",3, colonne,new PageId(0,0),bm,dm);
+            List<String> l= new ArrayList<>();
+            l.add("Nicolqs");
+            l.add("Fontqine");
+            l.add("12");
+            Record record= new Record(new RecordID(p4,0),l);
+
+
+            int total= relation.writeRecordToBuffer(record,cb,0);
+            System.out.println("taille totale write " +total );
+            System.out.println("\ntaille totale read " + relation.readFromBuffer(record, cb, 0) );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
 }

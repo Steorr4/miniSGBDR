@@ -54,13 +54,13 @@ public class Relation {
             else{
                 if (((TypeParam) typeCol).getType() == TypeParam.ETypeParam.CHAR){
                     bb.put(ptPos, rec.getVal().get(i).getBytes());
-                    ptPos+=typeCol.getTaille();
-                    total+= typeCol.getTaille();
+                    ptPos+=(typeCol.getTaille() *2);
+                    total+= typeCol.getTaille() *2;
                 }
                if(((TypeParam) typeCol).getType() == TypeParam.ETypeParam.VARCHAR){
                    bb.put(ptPos, rec.getVal().get(i).getBytes());
-                   ptPos+=rec.getVal().get(i).length();
-                   total+=rec.getVal().get(i).length();
+                   ptPos+=(rec.getVal().get(i).length() *2);
+                   total+=((rec.getVal().get(i).length())*2);
                 }
 
             }
@@ -69,6 +69,7 @@ public class Relation {
         return total;
     }
 
+    //TODO: Y'a 7aja dayi
     public int readFromBuffer(Record rec, CustomBuffer buff, int pos){
         //recupere le buffer du buff
         //byte[] bArray = buff.getBb().array();
@@ -83,22 +84,29 @@ public class Relation {
             total+=(ptPosSui-ptPos);
             Type typeCol = colonnes.get(i).getTypeCol();
             if(typeCol instanceof TypeNonParam){
-
-                rec.getVal().set(i,((Number)(bb.getInt(ptPos))).toString());
+                if(((TypeNonParam)typeCol).getType().equals(TypeNonParam.ETypeNonParam.INT) ){
+                    rec.getVal().set(i, ((Number) (bb.getInt(ptPos))).toString());
+                }
+                else{
+                    rec.getVal().set(i, ((Number) (bb.getDouble(ptPos))).toString());
+                }
             }
             else{
                 sb=new StringBuilder();
                 for(int c=ptPos;c<ptPosSui;c++){
                     sb.append(bb.getChar(c));
                 }
-                rec.getVal().set(i,sb.toString());
+                System.out.println(sb);
+                rec.getVal().set(i, sb.toString());
+                System.out.println(sb);
             }
+
         }
-        return 0;
+        return total;
     }
 
     //TD5 :
-
+    // TODO : PAS LE DROIT DE FAIRE ACCES AU DiskManager READPAGE/WRITEPAGE
     public void addDataPage(){
         
     }

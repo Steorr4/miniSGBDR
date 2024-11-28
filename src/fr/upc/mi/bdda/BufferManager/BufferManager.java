@@ -1,11 +1,16 @@
-import java.nio.ByteBuffer;
+package fr.upc.mi.bdda.BufferManager;
+
+//Packages
+import fr.upc.mi.bdda.DiskManager.*;
+
+//JAVA imports
 import java.util.ArrayList;
 import java.util.List;
 
 public class BufferManager {
     private DBConfig config;
     private DiskManager dm;
-    protected List<CustomBuffer> bufferList;
+    private List<CustomBuffer> bufferList;
     private int time;
 
     //Constructor
@@ -16,13 +21,13 @@ public class BufferManager {
         this.time = 0;
     }
 
-    public CustomBuffer getPage(PageId pid) throws FAOException{
+    public CustomBuffer getPage(PageId pid) throws FAOException {
 
         int indice = 0;
 
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
-                cb.setPin_count(cb.getPin_count()+1);
+                cb.setPin_count(cb.getPin_count());
                 return cb;
             }
             indice++;
@@ -31,7 +36,7 @@ public class BufferManager {
 
 //        for (int i = 0; i < config.getBm_buffercount(); i++ ){
 //            if (bufferList.get(i)==null) {
-//                CustomBuffer cb = new CustomBuffer(pid, config);
+//                fr.upc.mi.bdda.BufferManager.CustomBuffer cb = new fr.upc.mi.bdda.BufferManager.CustomBuffer(pid, config);
 //                dm.ReadPage(pid,cb.getBb());
 //                bufferList.add(cb);
 //                return cb;
@@ -100,4 +105,36 @@ public class BufferManager {
         }
     }
 
+    //Getters & Setters
+    public DBConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(DBConfig config) {
+        this.config = config;
+    }
+
+    public DiskManager getDm() {
+        return dm;
+    }
+
+    public void setDm(DiskManager dm) {
+        this.dm = dm;
+    }
+
+    public List<CustomBuffer> getBufferList() {
+        return bufferList;
+    }
+
+    public void setBufferList(List<CustomBuffer> bufferList) {
+        this.bufferList = bufferList;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
 }

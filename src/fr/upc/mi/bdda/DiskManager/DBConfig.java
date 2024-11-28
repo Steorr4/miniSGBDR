@@ -1,3 +1,8 @@
+package fr.upc.mi.bdda.DiskManager;
+
+//Packages
+import fr.upc.mi.bdda.BufferManager.*;
+
 //JAVA Imports
 import java.beans.ConstructorProperties;
 import java.io.*;
@@ -33,7 +38,7 @@ public class DBConfig {
 		ObjectMapper mapper = new ObjectMapper(); // Mapper qui permet de lire un fichier .json
 		InputStream is = new FileInputStream(fic_config); // InputStream
 
-		return mapper.readValue(is, DBConfig.class); // Creer une instance de DBConfig en lisant sur l'inputStream et la renvois
+		return mapper.readValue(is, DBConfig.class); // Creer une instance de fr.upc.mi.bdda.DiskManager.DBConfig en lisant sur l'inputStream et la renvois
 	}
 
 	//Getters & Setters
@@ -72,7 +77,7 @@ public class DBConfig {
 	//ToString
 	@Override
 	public String toString() {
-		return "DBConfig : {" +
+		return "fr.upc.mi.bdda.DiskManager.DBConfig : {" +
 				"dbpath='" + dbpath + '\'' +
 				", pagesize=" + pagesize +
 				", dm_maxfilesize=" + dm_maxfilesize +

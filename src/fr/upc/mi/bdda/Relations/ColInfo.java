@@ -1,3 +1,5 @@
+package fr.upc.mi.bdda.Relations;
+
 public class ColInfo {
     private String nomCol;
     private Type typeCol;

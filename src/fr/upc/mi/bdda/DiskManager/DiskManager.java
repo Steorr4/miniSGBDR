@@ -1,3 +1,8 @@
+package fr.upc.mi.bdda.DiskManager;
+
+//Packages
+import fr.upc.mi.bdda.BufferManager.*;
+
 //JAVA Imports
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -36,7 +41,7 @@ public class DiskManager {
 	}
 	
 	
-	public void ReadPage(PageId pageId,ByteBuffer buff)  {
+	public void ReadPage(PageId pageId, ByteBuffer buff)  {
 		String pathFichier=config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb"; // Recupere le nom du fichier grace a l'id du pageid
 
 		try {
@@ -58,7 +63,7 @@ public class DiskManager {
 		
 	}
 
-	public void WritePage(PageId pageId,ByteBuffer buff) {
+	public void WritePage(PageId pageId, ByteBuffer buff) {
 		String pathFichier= config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {

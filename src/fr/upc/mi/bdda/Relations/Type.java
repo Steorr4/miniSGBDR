@@ -1,3 +1,5 @@
+package fr.upc.mi.bdda.Relations;
+
 public class Type {
     int taille;
 

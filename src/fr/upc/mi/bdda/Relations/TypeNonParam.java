@@ -1,4 +1,6 @@
-public class TypeNonParam extends Type{
+package fr.upc.mi.bdda.Relations;
+
+public class TypeNonParam extends Type {
     ETypeNonParam type;
 
     public enum ETypeNonParam{

@@ -1,3 +1,5 @@
+package fr.upc.mi.bdda.Relations;
+
 import java.util.List;
 
 public class Record {

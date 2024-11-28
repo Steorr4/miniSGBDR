@@ -1,3 +1,10 @@
+package fr.upc.mi.bdda.Relations;
+
+//Package
+import fr.upc.mi.bdda.BufferManager.*;
+import fr.upc.mi.bdda.DiskManager.*;
+
+//JAVA Imports
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -6,8 +13,20 @@ public class Relation {
     private String name;
     private int nbCol;
     private List<ColInfo> colonnes;
+    private PageId headerPageID;
+    private BufferManager bm;
+    private DiskManager dm;
 
-    public int writeRecordToBuffer(Record rec, CustomBuffer buff, int pos){
+    public Relation(String name, int nbCol, List<ColInfo> colonnes, PageId headerPageID, BufferManager bm, DiskManager dm) {
+        this.name = name;
+        this.nbCol = nbCol;
+        this.colonnes = colonnes;
+        this.headerPageID = headerPageID;
+        this.bm = bm;
+        this.dm = dm;
+    }
+
+    public int writeRecordToBuffer(fr.upc.mi.bdda.Relations.Record rec, CustomBuffer buff, int pos){
 
         int total= 4*(nbCol+1); // Reservation de la table de pointage de la relation
         int ptPos = pos+total; // Pointeur de la position courante qui commence apres la talbe de pointage
@@ -78,5 +97,10 @@ public class Relation {
         return 0;
     }
 
+    //TD5 :
+
+    public void addDataPage(){
+        
+    }
 
 }

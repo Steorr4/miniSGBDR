@@ -1,6 +1,10 @@
+package fr.upc.mi.bdda.DiskManager;
+
+//Packages
+import fr.upc.mi.bdda.BufferManager.*;
+
 //JAVA Imports
 import java.io.Serializable;
-import java.util.Objects;
 
 public class PageId implements Serializable {
 	private int fileIdx; // ID d'un fichier .rsbd
@@ -23,7 +27,7 @@ public class PageId implements Serializable {
 	//ToString
 	@Override
 	public String toString() {
-		return "PageId : {" +
+		return "fr.upc.mi.bdda.DiskManager.PageId : {" +
 				"fileIdx=" + fileIdx +
 				", pageIdx=" + pageIdx +
 				'}';

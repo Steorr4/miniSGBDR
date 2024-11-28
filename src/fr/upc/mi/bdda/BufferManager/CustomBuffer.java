@@ -1,3 +1,9 @@
+package fr.upc.mi.bdda.BufferManager;
+
+//Packages
+import fr.upc.mi.bdda.DiskManager.*;
+
+//JAVA imports
 import java.nio.ByteBuffer;
 
 public class CustomBuffer {
@@ -51,6 +57,8 @@ public class CustomBuffer {
         this.time = time;
     }
 
+
+
     public DBConfig getConfig() {
         return config;
     }
@@ -61,7 +69,7 @@ public class CustomBuffer {
 
     @Override
     public String toString() {
-        return "CustomBuffer{" +
+        return "fr.upc.mi.bdda.BufferManager.CustomBuffer{" +
                 "bb=" + bb +
                 ", pid=" + pid +
                 ", pin_count=" + pin_count +

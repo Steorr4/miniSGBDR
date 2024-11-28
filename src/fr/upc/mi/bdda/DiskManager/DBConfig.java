@@ -23,7 +23,7 @@ public class DBConfig {
 	@ConstructorProperties({"dbpath", "pagesize", "dm_maxfilesize",
 			"bm_buffercount", "bm_policy"})
 	/* Pour que le mapper comprenne comment construire une instance */
-	public DBConfig(String dbpath,int pagesize, int dm_maxfilesize, int bm_buffercount, String bm_policy) {
+	public DBConfig(String dbpath, int pagesize, int dm_maxfilesize, int bm_buffercount, String bm_policy) {
 		this.dbpath = dbpath;
 		this.pagesize = pagesize;
 		this.dm_maxfilesize = dm_maxfilesize;
@@ -52,7 +52,7 @@ public class DBConfig {
 		return dm_maxfilesize;
 	}
 	public int getBm_buffercount(){
-		return dm_maxfilesize;
+		return bm_buffercount;
 	}
 
 	public String getBm_policy() {
@@ -77,7 +77,7 @@ public class DBConfig {
 	//ToString
 	@Override
 	public String toString() {
-		return "fr.upc.mi.bdda.DiskManager.DBConfig : {" +
+		return "DBConfig : {" +
 				"dbpath='" + dbpath + '\'' +
 				", pagesize=" + pagesize +
 				", dm_maxfilesize=" + dm_maxfilesize +

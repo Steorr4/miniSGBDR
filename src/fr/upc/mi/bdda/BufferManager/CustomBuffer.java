@@ -69,7 +69,7 @@ public class CustomBuffer {
 
     @Override
     public String toString() {
-        return "fr.upc.mi.bdda.BufferManager.CustomBuffer{" +
+        return "CustomBuffer{" +
                 "bb=" + bb +
                 ", pid=" + pid +
                 ", pin_count=" + pin_count +

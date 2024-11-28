@@ -91,8 +91,7 @@ public class Test {
             System.out.println("=============");
             bm.freePage(p1,false);
             bm.freePage(p2,false);
-            System.out.println(bm.getPage(p1));
-            System.out.println(bm.getPage(p2));
+            System.out.println(config.getBm_buffercount());
             System.out.println("=============");
             System.out.println(bm.getPage(p4));
             System.out.println("buffer list apres ajout=============");

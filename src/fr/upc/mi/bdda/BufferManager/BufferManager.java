@@ -27,10 +27,10 @@ public class BufferManager {
 
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
+                System.out.println("1");
                 cb.setPin_count(cb.getPin_count());
                 return cb;
             }
-            indice++;
         }
 
 
@@ -43,16 +43,18 @@ public class BufferManager {
 //            }
 //        } //TODO a supprimer (modifier juste en dessous)
 
-        if (indice<config.getBm_buffercount()-1){
+        if (bufferList.size()<config.getBm_buffercount()){
             CustomBuffer cb = new CustomBuffer(pid, config);
             dm.ReadPage(pid,cb.getBb());
             bufferList.add(cb);
+            System.out.println("2");
             return cb;
         }
 
 
         CustomBuffer candidat = null;
         if (config.getBm_policy().equals("LRU")) {
+            System.out.println("3");
             for (int i = 0; i < config.getBm_buffercount(); i++) {
                 if (bufferList.get(i).getPin_count()==0 && bufferList.get(i).getTime() != 0){
                     if (candidat!=null) candidat = bufferList.get(i);
@@ -61,6 +63,7 @@ public class BufferManager {
 
             }
         }else if(config.getBm_policy().equals("MRU")){
+            System.out.println("4");
             for (int i = 0; i < config.getBm_buffercount(); i++) {
                 if (bufferList.get(i).getPin_count() == 0 && bufferList.get(i).getTime() != 0) {
                     if (candidat == null) candidat = bufferList.get(i);

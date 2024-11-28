@@ -1,4 +1,4 @@
-//Jackson Imports
+package fr.upc.mi.bdda.mainTest;//Jackson Imports
 import fr.upc.mi.bdda.BufferManager.*;
 import fr.upc.mi.bdda.DiskManager.*;
 
@@ -70,9 +70,10 @@ public class Test {
             PageId p4 = dm.AllocPage();
             bm.getPage(p1);
             bm.getPage(p2);
+            bm.getPage(p3);
             System.out.println(bm.getPage(p1)); //--
 
-            System.out.println("==============");
+            System.out.println("buffer list initial==============");
 
             for (CustomBuffer elem : bm.getBufferList()){ //--
                 System.out.println(elem);
@@ -85,12 +86,16 @@ public class Test {
             for (CustomBuffer elem : bm.getBufferList()){ //--
                 System.out.println(elem);
             }
+
+
+            System.out.println("=============");
             bm.freePage(p1,false);
             bm.freePage(p2,false);
             System.out.println(bm.getPage(p1));
             System.out.println(bm.getPage(p2));
-
+            System.out.println("=============");
             System.out.println(bm.getPage(p4));
+            System.out.println("buffer list apres ajout=============");
             for (CustomBuffer elem : bm.getBufferList()){ //--
                 System.out.println(elem);
             }

@@ -1,6 +1,6 @@
 #!/bin/bash
 compile(){
-javac -d bin src/*.java
+javac -cp "lib/*" -d bin src/fr/upc/mi/bdda/*/*.java
 echo "class files compiled"
 }
 

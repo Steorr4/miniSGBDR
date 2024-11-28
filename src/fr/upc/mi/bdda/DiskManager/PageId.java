@@ -27,7 +27,7 @@ public class PageId implements Serializable {
 	//ToString
 	@Override
 	public String toString() {
-		return "fr.upc.mi.bdda.DiskManager.PageId : {" +
+		return "PageId : {" +
 				"fileIdx=" + fileIdx +
 				", pageIdx=" + pageIdx +
 				'}';
@@ -36,8 +36,8 @@ public class PageId implements Serializable {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof PageId pageId)) return false;
-        return fileIdx == pageId.fileIdx && pageIdx == pageId.pageIdx;
+		if (!(o instanceof PageId)){ return false;}
+        return fileIdx == ((PageId)o).fileIdx && pageIdx == ((PageId)o).pageIdx;
 	}
 
 }

@@ -74,6 +74,7 @@ public class BufferManager {
         if(candidat.isDirty_flag()) dm.WritePage(candidat.getPid(), candidat.getBb());
         CustomBuffer cb = new CustomBuffer(pid, config);
 //        bufferList.set(bufferList.indexOf(candidat), cb);
+        System.out.println("-------\n"+candidat+"\n---------");
         bufferList.remove(candidat);
         bufferList.add(cb);
         return cb;

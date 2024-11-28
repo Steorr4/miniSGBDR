@@ -26,7 +26,7 @@ public class Relation {
         this.dm = dm;
     }
 
-    public int writeRecordToBuffer(fr.upc.mi.bdda.Relations.Record rec, CustomBuffer buff, int pos){
+    public int writeRecordToBuffer(Record rec, CustomBuffer buff, int pos){
 
         int total= 4*(nbCol+1); // Reservation de la table de pointage de la relation
         int ptPos = pos+total; // Pointeur de la position courante qui commence apres la talbe de pointage

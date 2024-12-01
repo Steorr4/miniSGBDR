@@ -7,8 +7,8 @@ import java.io.Serializable;
  * Pointeur vers une page.
  */
 public class PageId implements Serializable {
-	private int fileIdx; // ID d'un fichier .rsbd
-	private int pageIdx; // ID d'une page d'un fichier .rsbd
+	private final int fileIdx; // ID d'un fichier .rsbd
+	private final int pageIdx; // ID d'une page d'un fichier .rsbd
 
 	/**
 	 * Main constructor.

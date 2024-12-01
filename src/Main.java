@@ -101,7 +101,7 @@ public class Main {
             colonne.add(new ColInfo("prenom", new TypeParam(10, TypeParam.ETypeParam.VARCHAR)));
             colonne.add(new ColInfo("age", new TypeNonParam(TypeNonParam.ETypeNonParam.INT)));
 
-            Relation relation = new Relation("nina",3, colonne,new PageId(0,0),bm,dm);
+            Relation relation = new Relation("nina",colonne,new PageId(0,0),dm,bm);
             List<String> l= new ArrayList<>();
             l.add("Nicolqs");
             l.add("Fontqine");

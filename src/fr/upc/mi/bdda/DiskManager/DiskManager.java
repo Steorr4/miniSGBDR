@@ -11,7 +11,7 @@ import java.io.*;
  * <br/>(Voir TP2-C pour comprendre le fonctionnement plus en détail)
  */
 public class DiskManager {
-	private DBConfig config; // Instance de la config
+	private final DBConfig config; // Instance de la config
 	private ArrayList<PageId> pagesLibres; // Array de pages libres attendant d'être allouées
 	private int nbFichiers; // Nombre de fichier deja créés
 
@@ -38,14 +38,14 @@ public class DiskManager {
 	 */
 	public PageId AllocPage() throws IOException{
 
-		//Si il y a un page libre, alors on retourne la page en question
+		//S'il y a un page libre, alors on retourne la page en question
 		if(!pagesLibres.isEmpty()) {
 			PageId pid=pagesLibres.getFirst();
 			pagesLibres.removeFirst();
 			return pid;
 		}
 
-		//Si il n'y a pas de page libre alors on doit creer un nouveau fichier avec de nouvelles pages.
+		//S'il n'y a pas de page libre alors on doit creer un nouveau fichier avec de nouvelles pages.
 		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsdb");
 		f.createNewFile();
 
@@ -89,7 +89,7 @@ public class DiskManager {
 	 * Ecrit le contenu du buffeur donné par l'appelant dans une page sur disque.
 	 *
 	 * @param pageId la page indiquée.
-	 * @param buff le buffer dans lequel est contenu les données que l'on souhaite écrire sur disque.
+	 * @param buff le buffer dans lequel sont contenues les données que l'on souhaite écrire sur disque.
 	 */
 	public void WritePage(PageId pageId, ByteBuffer buff) {
 		String pathFichier= config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";

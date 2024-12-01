@@ -1,8 +1,16 @@
 package fr.upc.mi.bdda.FileAccess;
 
-public class Type {
-    int taille;
+/**
+ * Classe générale pour représenter un type dans une table
+ */
+public abstract class Type {
+    int taille; // Taille en Byte
 
+    /**
+     * Main constructor.
+     *
+     * @param taille la taille du type en Byte.
+     */
     public Type(int taille) {
         this.taille = taille;
     }

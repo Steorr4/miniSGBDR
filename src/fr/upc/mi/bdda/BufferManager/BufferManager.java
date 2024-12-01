@@ -14,8 +14,9 @@ import java.util.List;
  * <br/>(Voir TP3-A pour comprendre le fonctionnement plus en détail)
  */
 public class BufferManager {
-    private DBConfig config; // Instance Config
-    private DiskManager dm; // Instance DiskManager
+    private final DBConfig config; // Instance Config
+    private final DiskManager dm; // Instance DiskManager
+
     private List<CustomBuffer> bufferList; // Cadres de page
     private final int bufferCount; // Nombre de cadre de page
     private String policy; // Politique de remplacement

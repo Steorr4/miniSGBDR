@@ -9,101 +9,150 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * Classe pour représenter une table (relation) et les diverses opérations pouvant y être aplliqués
+ * (Rajout/Supression/Consultation des tuples).
+ * </br>(Voir TP4-A pour comprendre le fonctionnement plus en détail)
+ */
 public class Relation {
 
-    private String name;
-    private int nbCol;
-    private List<ColInfo> colonnes;
-    private PageId headerPageID;
-    private BufferManager bm;
-    private DiskManager dm;
+    private String name; // Nom de la table
+    private int nbCol; // Nombre de colonnes de la table
+    private List<ColInfo> colonnes; // Liste des colonnes de la table
+    private PageId headerPageID; // Pointeur vers la HeaderPage
 
-    public Relation(String name, int nbCol, List<ColInfo> colonnes, PageId headerPageID, BufferManager bm, DiskManager dm) {
+    private final DiskManager dm;
+    private final BufferManager bm;
+
+    /**
+     * Main constructor.
+     *
+     * @param name le nom de la table.
+     * @param colonnes la liste des colonnes dans la table.
+     * @param headerPageID l'identifiant de la HeaderPage de la relation.
+     * @param dm l'instance du DiskManager.
+     * @param bm l'instance du BufferManager.
+     */
+    public Relation(String name, List<ColInfo> colonnes,
+                    PageId headerPageID,DiskManager dm, BufferManager bm) {
+
         this.name = name;
-        this.nbCol = nbCol;
         this.colonnes = colonnes;
+        this.nbCol = colonnes.size();
         this.headerPageID = headerPageID;
-        this.bm = bm;
         this.dm = dm;
+        this.bm = bm;
     }
 
+    /**
+     * Permet d'écrire un tuple dans un Buffer à partir d'une certaine position.
+     * Un offset_directory est également inscrit au début de l'espace alloué au tuple afin de pointer
+     * sur les différentes valeurs des colonnes dans le cas où les types sont de taille variable.
+     *
+     * @param rec le tuple à enregistrer.
+     * @param buff le Buffer dans lequel écrire.
+     * @param pos la position relative dans le buffer.
+     * @return la taille totale occupée par le tuple (offset_directory compris).
+     */
     public int writeRecordToBuffer(Record rec, CustomBuffer buff, int pos){
+
+        ByteBuffer bb = buff.getBb(); // On récupère le buffer pour ecrire dedans
 
         int total= 4*(nbCol+1); // Reservation de la table de pointage de la relation
         int ptPos = pos+total; // Pointeur de la position courante qui commence apres la talbe de pointage
-        ByteBuffer bb = buff.getBb(); // On recupere le buffer pour ecrire dedans
 
         for(int i = 0; i<nbCol; i++){
 
-            Type typeCol = colonnes.get(i).getTypeCol();
+            bb.putInt(pos+4*i,ptPos);
+            Type type = colonnes.get(i).getTypeCol();
 
-            pos+= 4*i;
-            bb.putInt(pos,ptPos);
+            if(type instanceof TypeNonParam){
+                switch (((TypeNonParam) type).getType()){
 
-            if(typeCol instanceof TypeNonParam){
-                if(((TypeNonParam) typeCol).getType() == TypeNonParam.ETypeNonParam.INT){
-                    bb.putInt(ptPos, Integer.parseInt(rec.getVal().get(i)));
-                    total += typeCol.getTaille();
+                    case INT:
+                        bb.putInt(ptPos, Integer.parseInt(rec.getVal().get(i)));
+                        total += type.getTaille();
+                        break;
 
+                    case REAL:
+                        bb.putDouble(ptPos, Double.parseDouble(rec.getVal().get(i)));
+                        total += type.getTaille();
+                        break;
                 }
-                if(((TypeNonParam) typeCol).getType() == TypeNonParam.ETypeNonParam.REAL){
-                    bb.putDouble(ptPos, Double.parseDouble(rec.getVal().get(i)));
-                    total += typeCol.getTaille();
+                ptPos += 4;
+
+            }else {
+                switch (((TypeParam) type).getType()){
+                    case CHAR:
+                        bb.put(ptPos, rec.getVal().get(i).getBytes());
+                        total += type.getTaille();
+                        ptPos += type.getTaille();
+                        break;
+
+                    case VARCHAR:
+                        bb.put(ptPos, rec.getVal().get(i).getBytes());
+                        ptPos+=rec.getVal().get(i).length();
+                        total+=rec.getVal().get(i).length();
                 }
-                ptPos+=typeCol.getTaille();
             }
-            else{
-                if (((TypeParam) typeCol).getType() == TypeParam.ETypeParam.CHAR){
-                    bb.put(ptPos, rec.getVal().get(i).getBytes());
-                    ptPos+=(typeCol.getTaille() );
-                    total+= typeCol.getTaille() ;
-                }
-               if(((TypeParam) typeCol).getType() == TypeParam.ETypeParam.VARCHAR){
-                   bb.put(ptPos, rec.getVal().get(i).getBytes());
-                   ptPos+=(rec.getVal().get(i).length() );
-                   total+=((rec.getVal().get(i).length()));
-                }
-
-            }
-
         }
         return total;
     }
 
-    //TODO: Ca read mal les int
+    /**
+     * Permet de lire un tuple sur le Buffer et de convertir en Record.
+     *
+     * @param rec un record dans les valeurs sont vides.
+     * @param buff le Buffer contenant le tuple.
+     * @param pos la position du tuple dans le buffer.
+     * @return la taille totale occupée par le tuple (offset_directory compris).
+     */
     public int readFromBuffer(Record rec, CustomBuffer buff, int pos) {
+
         ByteBuffer bb = buff.getBb();
-        int total = 4 * (nbCol + 1);
-        int p = pos; // position de déplacement
 
-        for (int i = 0; i < nbCol; i++) {
-            int ptPos = bb.getInt(p);
-            p += 4;
-            Type typeCol = colonnes.get(i).getTypeCol();
+        int total= 4*(nbCol+1);
+        int ptPos;
+        List<String> listVal = rec.getVal();
 
-            if (typeCol instanceof TypeNonParam) {
-                if (((TypeNonParam) typeCol).getType().equals(TypeNonParam.ETypeNonParam.INT)) {
-                    rec.getVal().set(i, Integer.toString(bb.getInt(ptPos)));
-                    total += typeCol.getTaille();
-                    System.out.println(((Number) (bb.getInt(ptPos))).toString());
-                } else {
-                    rec.getVal().set(i, Double.toString(bb.getDouble(ptPos)));
-                    total += typeCol.getTaille();
+        for(int i = 0; i<nbCol; i++){
+
+            Type type = colonnes.get(i).getTypeCol();
+
+            if(type instanceof TypeNonParam){
+                switch (((TypeNonParam) type).getType()){
+                    case INT:
+                        ptPos = bb.getInt(pos);
+                        pos+=4;
+
+                        listVal.set(i,Integer.toString(bb.getInt(ptPos)));
+                        total+=4;
+                        break;
+
+                    case REAL:
+                        ptPos = bb.getInt(pos);
+                        pos+=4;
+
+                        listVal.set(i,Double.toString(bb.getDouble(ptPos)));
+                        total+=4;
+                        break;
                 }
-            } else {
-                int length = (typeCol instanceof TypeParam && ((TypeParam) typeCol).getType().equals(TypeParam.ETypeParam.VARCHAR))
-                        ? rec.getVal().get(i).length()
-                        : typeCol.getTaille();
+            }else {
+                ptPos = bb.getInt(pos);
+                pos+=4;
 
-                byte[] bytes = new byte[length];
+                int length = bb.getInt(pos)-ptPos;
+                System.out.println(length);
+                byte[] b = new byte[length];
                 bb.position(ptPos);
-                bb.get(bytes, 0, length);
-                String value = new String(bytes, StandardCharsets.UTF_8);
-                rec.getVal().set(i, value);
-                total += length;
-                System.out.println(value);
+                bb.get(b,0,length);
+
+                listVal.set(i,new String(b, StandardCharsets.UTF_8));
+                total+=length;
             }
+
         }
+        for(int i =0; i<nbCol;i++) System.out.println(listVal.get(i));
         return total;
     }
 

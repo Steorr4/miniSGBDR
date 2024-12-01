@@ -31,6 +31,10 @@ public class DBConfig {
 			"bm_buffercount", "bm_policy"})
 	/* Pour que le mapper comprenne comment construire une instance */
 	public DBConfig(String dbpath, int pagesize, int dm_maxfilesize, int bm_buffercount, String bm_policy) {
+		if(pagesize <= 0 || dm_maxfilesize <= 0 ||
+			bm_buffercount <= 0){
+			throw new IllegalArgumentException("Erreur config");
+		}
 		this.dbpath = dbpath;
 		this.pagesize = pagesize;
 		this.dm_maxfilesize = dm_maxfilesize;

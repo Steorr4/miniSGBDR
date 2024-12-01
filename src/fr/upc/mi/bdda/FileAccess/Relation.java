@@ -84,7 +84,11 @@ public class Relation {
             }else {
                 switch (((TypeParam) type).getType()){
                     case CHAR:
-                        bb.put(ptPos, rec.getVal().get(i).getBytes());
+                        StringBuilder sb = new StringBuilder(rec.getVal().get(i));
+                        for(int j = rec.getVal().get(i).length(); j< type.getTaille();j++) sb.append(" ");
+
+                        bb.put(ptPos, sb.toString().getBytes());
+
                         total += type.getTaille();
                         ptPos += type.getTaille();
                         break;
@@ -152,7 +156,6 @@ public class Relation {
             }
 
         }
-        for(int i =0; i<nbCol;i++) System.out.println(listVal.get(i));
         return total;
     }
 

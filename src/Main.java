@@ -1,23 +1,19 @@
-package fr.upc.mi.bdda.mainTest;//Jackson Imports
+//Packages
 import fr.upc.mi.bdda.BufferManager.*;
 import fr.upc.mi.bdda.DiskManager.*;
-import fr.upc.mi.bdda.Relations.*;
-import fr.upc.mi.bdda.Relations.Record;
+import fr.upc.mi.bdda.FileAccess.*;
+import fr.upc.mi.bdda.FileAccess.Record;
 
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+//JAVA Imports
 import java.util.ArrayList;
 import java.util.List;
 
-//JAVA Imports
-
-
-public class Test {
+public class Main {
     public static void main(String[] agrs){
 
         //TESTS DB_CONFIG
 //        try {
-//            fr.upc.mi.bdda.DiskManager.DBConfig config = fr.upc.mi.bdda.DiskManager.DBConfig.LoadDBConfig("src/config.json");
+//            DBConfig config = DBConfig.LoadDBConfig("src/config.json");
 //            System.out.println(config);
 //        } catch (JsonMappingException e){
 //            e.printStackTrace();
@@ -31,9 +27,9 @@ public class Test {
 
         //TESTS DISK_MANAGER
 //        try {
-//            fr.upc.mi.bdda.DiskManager.DBConfig config = fr.upc.mi.bdda.DiskManager.DBConfig.LoadDBConfig("src/config.json");
-//            fr.upc.mi.bdda.DiskManager.DiskManager dm = new fr.upc.mi.bdda.DiskManager.DiskManager(config);
-//            fr.upc.mi.bdda.DiskManager.PageId p00=dm.AllocPage();
+//            DBConfig config = DBConfig.LoadDBConfig("src/config.json");
+//            DiskManager dm = new DiskManager(config);
+//            DiskManager.PageId p00=dm.AllocPage();
 //            for (int i = 1; i<7; i++) System.out.println(dm.AllocPage());
 //            byte[]b=new byte[config.getPagesize()];
 //            for(int i = 0; i< config.getPagesize(); i++) b[i]=81;
@@ -49,18 +45,10 @@ public class Test {
 //            dm.SaveState();
 //            dm.LoadState();
 //
-//            fr.upc.mi.bdda.BufferManager.BufferManager bm = new fr.upc.mi.bdda.BufferManager.BufferManager(config, dm);
+//            BufferManager bm = new BufferManager(config, dm);
 //            bm.getPage(p00);
 //
-//        } catch (JsonMappingException e){
-//            e.printStackTrace();
-//        } catch (JsonParseException e){
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        } catch (NullPointerException e){
+//        } catch (Exception e){
 //            e.printStackTrace();
 //        }
 

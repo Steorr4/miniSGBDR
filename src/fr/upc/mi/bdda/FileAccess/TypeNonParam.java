@@ -1,4 +1,4 @@
-package fr.upc.mi.bdda.Relations;
+package fr.upc.mi.bdda.FileAccess;
 
 public class TypeNonParam extends Type {
     ETypeNonParam type;

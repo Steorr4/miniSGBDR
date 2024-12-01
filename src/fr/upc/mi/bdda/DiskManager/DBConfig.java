@@ -1,25 +1,32 @@
 package fr.upc.mi.bdda.DiskManager;
 
-//Packages
-import fr.upc.mi.bdda.BufferManager.*;
-
 //JAVA Imports
 import java.beans.ConstructorProperties;
 import java.io.*;
 
 //Jackson Imports
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Classe qui permet de recuperer une config au format .json afin de definir les variables de fonctionnemet du SGBD.
+ * (Voir TP1-F)
+ */
 public class DBConfig {
 	private String dbpath; // Chemin vers la base de données
 	private int pagesize; // Taille alloue a une page
 	private int dm_maxfilesize;	// Taille maximum d'un fichier .rsbd
-	private int bm_buffercount;
-	private String bm_policy;
+	private int bm_buffercount; // Nombre de cadre de page
+	private String bm_policy; // Politique de remplacement
 
-	//Constructor
+	/**
+	 * Main constructor.
+	 *
+	 * @param dbpath le chemin vers la Base de donnée.
+	 * @param pagesize la taille d'une page.
+	 * @param dm_maxfilesize la taille d'un fichier rsdb.
+	 * @param bm_buffercount le nombre de cadre de page max pouvant etre load en mémoire.
+	 * @param bm_policy la politique de remplacement utilisée pour échanger les pages load en mémoire (LRU/MRU).
+	 */
 	@ConstructorProperties({"dbpath", "pagesize", "dm_maxfilesize",
 			"bm_buffercount", "bm_policy"})
 	/* Pour que le mapper comprenne comment construire une instance */
@@ -31,14 +38,22 @@ public class DBConfig {
 		this.bm_policy = bm_policy;
 	}
 
-	//Main Method
-	public static DBConfig LoadDBConfig(String fic_config) throws FileNotFoundException, JsonParseException,
-			JsonMappingException, IOException{
+	/**
+	 * Utilise un mapper de la librairie Jackson afin de lire via le flux d'input le fichier config.json et
+	 * construire un objet DBConfig.
+	 *
+	 * @param fic_config le chemin vers le fichier de config.
+	 * @return Une instance de DBConfig base sur les parametres du fichier.
+	 * @throws FileNotFoundException si le chemin vers le fichier config est erronné.
+	 * @throws IOException une valeur du fichier est incorrecte.
+	 */
+	public static DBConfig LoadDBConfig(String fic_config) throws FileNotFoundException,
+            IOException{
 
-		ObjectMapper mapper = new ObjectMapper(); // Mapper qui permet de lire un fichier .json
-		InputStream is = new FileInputStream(fic_config); // InputStream
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream is = new FileInputStream(fic_config);
 
-		return mapper.readValue(is, DBConfig.class); // Creer une instance de fr.upc.mi.bdda.DiskManager.DBConfig en lisant sur l'inputStream et la renvois
+		return mapper.readValue(is, DBConfig.class);
 	}
 
 	//Getters & Setters
@@ -54,7 +69,6 @@ public class DBConfig {
 	public int getBm_buffercount(){
 		return bm_buffercount;
 	}
-
 	public String getBm_policy() {
 		return bm_policy;
 	}

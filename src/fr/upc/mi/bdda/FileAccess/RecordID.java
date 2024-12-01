@@ -1,4 +1,4 @@
-package fr.upc.mi.bdda.Relations;
+package fr.upc.mi.bdda.FileAccess;
 
 //Package
 import fr.upc.mi.bdda.DiskManager.PageId;

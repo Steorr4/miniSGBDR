@@ -13,7 +13,7 @@ import java.io.*;
 public class DiskManager {
 	private final DBConfig config; // Instance de la config
 	private ArrayList<PageId> pagesLibres; // Array de pages libres attendant d'être allouées
-	private int nbFichiers; // Nombre de fichier deja créés
+	private int nbFichiers; // Nombre de fichiers deja créés
 
 	/**
 	 * Main constructor.
@@ -45,7 +45,7 @@ public class DiskManager {
 			return pid;
 		}
 
-		//S'il n'y a pas de page libre alors on doit creer un nouveau fichier avec de nouvelles pages.
+		//S'il n'y a pas de page libre alors, on doit creer un nouveau fichier avec de nouvelles pages.
 		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsdb");
 		f.createNewFile();
 

@@ -38,7 +38,7 @@ public class DiskManager {
 	 */
 	public PageId AllocPage() throws IOException{
 
-		//S'il y a un page libre, alors on retourne la page en question
+		//S'il y a une page libre, alors on retourne la page en question
 		if(!pagesLibres.isEmpty()) {
 			PageId pid=pagesLibres.getFirst();
 			pagesLibres.removeFirst();

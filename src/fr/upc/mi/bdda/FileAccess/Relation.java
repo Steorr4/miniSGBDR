@@ -146,7 +146,6 @@ public class Relation {
                 pos+=4;
 
                 int length = bb.getInt(pos)-ptPos;
-                System.out.println(length);
                 byte[] b = new byte[length];
                 bb.position(ptPos);
                 bb.get(b,0,length);

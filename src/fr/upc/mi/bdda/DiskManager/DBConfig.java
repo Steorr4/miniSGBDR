@@ -12,11 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * (Voir TP1-F)
  */
 public class DBConfig {
-	private String dbpath; // Chemin vers la base de données
-	private int pagesize; // Taille alloue a une page
-	private int dm_maxfilesize;	// Taille maximum d'un fichier .rsbd
-	private int bm_buffercount; // Nombre de cadre de page
-	private String bm_policy; // Politique de remplacement
+	private final String dbpath; // Chemin vers la base de données
+	private final int pagesize; // Taille alloue a une page
+	private final int dm_maxfilesize;	// Taille maximum d'un fichier .rsbd
+	private final int bm_buffercount; // Nombre de cadre de page
+	private final String bm_policy; // Politique de remplacement
 
 	/**
 	 * Main constructor.
@@ -49,7 +49,7 @@ public class DBConfig {
 	 * @param fic_config le chemin vers le fichier de config.
 	 * @return Une instance de DBConfig base sur les parametres du fichier.
 	 * @throws FileNotFoundException si le chemin vers le fichier config est erronné.
-	 * @throws IOException une valeur du fichier est incorrecte.
+	 * @throws IOException un champ du fichier est incorrecte.
 	 */
 	public static DBConfig LoadDBConfig(String fic_config) throws FileNotFoundException,
             IOException{
@@ -60,7 +60,7 @@ public class DBConfig {
 		return mapper.readValue(is, DBConfig.class);
 	}
 
-	//Getters & Setters
+	//Getters
 	public String getDbpath() {
 		return dbpath;
 	}
@@ -75,21 +75,6 @@ public class DBConfig {
 	}
 	public String getBm_policy() {
 		return bm_policy;
-	}
-	public void setDbpath(String dbpath) {
-		this.dbpath = dbpath;
-	}
-	public void setPagesize(int pagesize) {
-		this.pagesize = pagesize;
-	}
-	public void setDm_maxfilesize(int dm_maxfilesize) {
-		this.dm_maxfilesize = dm_maxfilesize;
-	}
-	public void setBm_buffercount(int bm_buffercount) {
-		this.bm_buffercount = bm_buffercount;
-	}
-	public void setBm_policy(String bm_policy) {
-		this.bm_policy = bm_policy;
 	}
 
 	//ToString

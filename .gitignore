@@ -29,6 +29,7 @@ replay_pid*
 .project
 
 /out/
+/bin/
 
 #Database
 DB/

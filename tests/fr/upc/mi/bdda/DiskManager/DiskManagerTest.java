@@ -1,12 +1,15 @@
 package fr.upc.mi.bdda.DiskManager;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 class DiskManagerTest {
 
@@ -35,5 +38,20 @@ class DiskManagerTest {
         assertTrue(file.exists());
     }
 
+    @Test
+    void testReadPage() throws IOException {;
+        dm.AllocPage();
+        PageId pid = dm.AllocPage();
+        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
+
+        RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
+        raf.seek(config.getPagesize());
+        raf.write(5);
+        raf.close();
+
+        dm.ReadPage(pid, buff);
+        assertEquals(5,buff.get());
+    }
 
 }

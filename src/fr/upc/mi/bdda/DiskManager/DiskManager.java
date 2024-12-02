@@ -64,20 +64,18 @@ public class DiskManager {
 	 * @param buff le buffer dans lequel on souhaite copier la page.
 	 */
 	public void ReadPage(PageId pageId, ByteBuffer buff)  {
-		// Recupere le nom du fichier grace aux ids du pageid
-		String pathFichier=config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
+		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
 			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
-			// Se pose au debut de la page dans le fichier
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
 			// Copie toute la page dans le tampon
-			int i = 0;
-			while(i<config.getPagesize() && i<(raf.length()- (long) pageId.getPageIdx() * config.getPagesize())) {
-				buff.put(raf.readByte());
-				i++;
-			}
+			for(int i = 0; i < config.getPagesize() &&
+					i < (raf.length() - (long) pageId.getPageIdx()
+							* config.getPagesize()); i++) buff.put(raf.readByte());
+
+			buff.flip();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,12 +90,14 @@ public class DiskManager {
 	 * @param buff le buffer dans lequel sont contenues les données que l'on souhaite écrire sur disque.
 	 */
 	public void WritePage(PageId pageId, ByteBuffer buff) {
-		String pathFichier= config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
+		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
-			RandomAccessFile raf=new RandomAccessFile(new File(pathFichier),"rw");
-			raf.seek((long) pageId.getPageIdx() *config.getPagesize());
-			for(int i=0; i< config.getPagesize(); i++) raf.write(buff.get());
+
+			RandomAccessFile raf = new RandomAccessFile(new File(pathFichier),"rw");
+			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
+			for(int i = 0; i < config.getPagesize(); i++) raf.write(buff.get());
+			buff.flip();
 
 		}catch (IOException e) {
 			e.printStackTrace();

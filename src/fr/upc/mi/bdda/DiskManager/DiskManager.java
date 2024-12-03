@@ -123,10 +123,11 @@ public class DiskManager {
 	}
 
 	/**
-	 * Enregistre la liste de spages libres dans un fichier dm.save placé à la racine du dossier de la BDD.
+	 * Enregistre la liste des pages libres dans un fichier dm.save placé à la racine du dossier de la BDD.
 	 */
 	public void SaveState() {
 		try {
+
 			FileOutputStream fos = new FileOutputStream(config.getDbpath()+"/dm.save");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(pagesLibres);
@@ -143,6 +144,7 @@ public class DiskManager {
 	 */
 	public void LoadState() {
 		try {
+
 			FileInputStream fis = new FileInputStream(config.getDbpath()+"/dm.save");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			this.pagesLibres = (ArrayList<PageId>) ois.readObject();
@@ -150,6 +152,11 @@ public class DiskManager {
 		}catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	//Getter
+	public ArrayList<PageId> getPagesLibres() {
+		return pagesLibres;
 	}
 
 }

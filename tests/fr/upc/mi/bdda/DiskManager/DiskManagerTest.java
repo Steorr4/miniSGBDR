@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
-
-
 class DiskManagerTest {
 
     private DiskManager dm;
@@ -39,7 +37,7 @@ class DiskManagerTest {
     }
 
     @Test
-    void testReadPage() throws IOException {;
+    void testReadPage() throws IOException {
         dm.AllocPage();
         PageId pid = dm.AllocPage();
         ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
@@ -70,5 +68,38 @@ class DiskManagerTest {
         raf.close();
     }
 
+    @Test
+    void testDeallocPage() throws IOException {
+        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+        PageId pid = dm.AllocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+
+        dm.DeallocPage(pid);
+        assertTrue(dm.getPagesLibres().contains(pid));
+    }
+
+    @Test
+    void testSaveLoadState() throws IOException {
+
+        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+        PageId pid1 = dm.AllocPage();
+        PageId pid2 = dm.AllocPage();
+        PageId pid3 = dm.AllocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+
+        dm.DeallocPage(pid1);
+        dm.DeallocPage(pid2);
+
+        dm.SaveState();
+        File file = new File(config.getDbpath()+"/dm.save");
+        assertTrue(file.exists());
+
+        dm.LoadState();
+        assertTrue(dm.getPagesLibres().contains(pid1) &&
+                dm.getPagesLibres().contains(pid2));
+        assertFalse(dm.getPagesLibres().contains(pid3));
+        assertEquals(3, dm.getPagesLibres().size());
+
+    }
 
 }

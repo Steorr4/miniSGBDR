@@ -71,7 +71,9 @@ public class DiskManager {
 			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
+			buff.clear();
 			buff.position(0);
+
 			byte[] data = new byte[config.getPagesize()];
 			for(int i = 0; i < data.length; i++) data[i] = raf.readByte();
 
@@ -100,9 +102,9 @@ public class DiskManager {
 
 			buff.position(0);
 			byte[] data = new byte[buff.remaining()];
-			buff.get(data,0,buff.remaining());
+			buff.get(data);
 
-			for(byte d : data) raf.write(d);
+			raf.write(data);
 			buff.position(0);
 
 		}catch (IOException e) {

@@ -13,17 +13,15 @@ class DBConfigTest {
     @CsvSource({"'./DB', -1, 4096, 3, 'MRU'", "'./DB', 1024, -12, 3, 'MRU'","'./DB', 1024, 4096, -3, 'MRU'"})
     void testDBConfigIllegalArgument(String dbpath, int pagesize, int dm_maxfilesize,
                                      int bm_buffercount, String bm_policy){
-        assertThrows(IllegalArgumentException.class, ()->{
-            new DBConfig(dbpath, pagesize, dm_maxfilesize, bm_buffercount, bm_policy);
-        });
+        assertThrows(IllegalArgumentException.class, ()->
+                new DBConfig(dbpath, pagesize, dm_maxfilesize, bm_buffercount, bm_policy));
     }
 
     @ParameterizedTest
     @ValueSource(strings="./fauxchemin")
     void testLoadDBConfigMissingFile(String fic_config){
-        assertThrows(IOException.class,()->{
-            DBConfig.LoadDBConfig(fic_config);
-        });
+        assertThrows(IOException.class,()->
+                DBConfig.LoadDBConfig(fic_config));
     }
 
     @ParameterizedTest

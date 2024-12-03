@@ -18,7 +18,7 @@ class DiskManagerTest {
 
     @BeforeEach
     void beforeEach(){
-        config = new DBConfig("./DB", 3, 9, 15, "LRU");
+        config = new DBConfig("./DB", 16, 64, 15, "LRU");
         dm = new DiskManager(config);
     }
 
@@ -53,5 +53,22 @@ class DiskManagerTest {
         dm.ReadPage(pid, buff);
         assertEquals(5,buff.get());
     }
+
+    @Test
+    void testWritePage() throws IOException {
+        dm.AllocPage();
+        PageId pid = dm.AllocPage();
+        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
+
+        buff.putInt(127);
+        RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
+        raf.seek(config.getPagesize());
+
+        dm.WritePage(pid, buff);
+        assertEquals(127,raf.readInt());
+        raf.close();
+    }
+
 
 }

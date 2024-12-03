@@ -67,15 +67,16 @@ public class DiskManager {
 		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
+
 			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
-			// Copie toute la page dans le tampon
-			for(int i = 0; i < config.getPagesize() &&
-					i < (raf.length() - (long) pageId.getPageIdx()
-							* config.getPagesize()); i++) buff.put(raf.readByte());
+			buff.position(0);
+			byte[] data = new byte[config.getPagesize()];
+			for(int i = 0; i < data.length; i++) data[i] = raf.readByte();
 
-			buff.flip();
+			buff.put(data);
+			buff.position(0);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,8 +97,13 @@ public class DiskManager {
 
 			RandomAccessFile raf = new RandomAccessFile(new File(pathFichier),"rw");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
-			for(int i = 0; i < config.getPagesize(); i++) raf.write(buff.get());
-			buff.flip();
+
+			buff.position(0);
+			byte[] data = new byte[buff.remaining()];
+			buff.get(data,0,buff.remaining());
+
+			for(byte d : data) raf.write(d);
+			buff.position(0);
 
 		}catch (IOException e) {
 			e.printStackTrace();

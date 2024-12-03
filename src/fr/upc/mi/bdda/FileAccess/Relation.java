@@ -75,7 +75,7 @@ public class Relation {
                         break;
 
                     case REAL:
-                        bb.putDouble(ptPos, Double.parseDouble(rec.getVal().get(i)));
+                        bb.putFloat(ptPos, Float.parseFloat(rec.getVal().get(i)));
                         total += type.getTaille();
                         break;
                 }
@@ -87,7 +87,7 @@ public class Relation {
                         StringBuilder sb = new StringBuilder(rec.getVal().get(i));
                         for(int j = rec.getVal().get(i).length(); j< type.getTaille();j++) sb.append(" ");
 
-                        bb.put(ptPos, sb.toString().getBytes());
+                        bb.put(ptPos, sb.toString().getBytes(StandardCharsets.UTF_8));
 
                         total += type.getTaille();
                         ptPos += type.getTaille();
@@ -95,8 +95,8 @@ public class Relation {
 
                     case VARCHAR:
                         bb.put(ptPos, rec.getVal().get(i).getBytes());
-                        ptPos+=rec.getVal().get(i).length();
-                        total+=rec.getVal().get(i).length();
+                        ptPos += rec.getVal().get(i).length();
+                        total += rec.getVal().get(i).length();
                 }
             }
         }
@@ -137,7 +137,7 @@ public class Relation {
                         ptPos = bb.getInt(pos);
                         pos+=4;
 
-                        listVal.set(i,Double.toString(bb.getDouble(ptPos)));
+                        listVal.set(i,Float.toString(bb.getFloat(ptPos)));
                         total+=4;
                         break;
                 }

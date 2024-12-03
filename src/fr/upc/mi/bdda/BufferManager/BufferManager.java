@@ -51,7 +51,7 @@ public class BufferManager {
         // Si la page est déjà chargée dans un cadre, on renvoie son buffer associé
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
-                cb.setPin_count(cb.getPin_count());
+                cb.setPin_count(cb.getPin_count()+1);
                 return cb;
             }
         }

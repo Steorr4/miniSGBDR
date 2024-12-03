@@ -11,48 +11,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] agrs){
 
-        //TESTS DB_CONFIG
-//        try {
-//            DBConfig config = DBConfig.LoadDBConfig("src/config.json");
-//            System.out.println(config);
-//        } catch (JsonMappingException e){
-//            e.printStackTrace();
-//        } catch (JsonParseException e){
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        }
-
-        //TESTS DISK_MANAGER
-//        try {
-//            DBConfig config = DBConfig.LoadDBConfig("src/config.json");
-//            DiskManager dm = new DiskManager(config);
-//            DiskManager.PageId p00=dm.AllocPage();
-//            for (int i = 1; i<7; i++) System.out.println(dm.AllocPage());
-//            byte[]b=new byte[config.getPagesize()];
-//            for(int i = 0; i< config.getPagesize(); i++) b[i]=81;
-//            ByteBuffer bb = ByteBuffer.wrap(b);
-//            Charset cs = Charset.forName("Shift_JIS");
-//            dm.WritePage(p00, bb);
-//            ByteBuffer bb1 = ByteBuffer.allocate(config.getPagesize());
-//            dm.ReadPage(p00, bb1);
-//            bb1.flip();
-//            CharBuffer cb = cs.decode(bb1);
-//            System.out.println(cb);
-//
-//            dm.SaveState();
-//            dm.LoadState();
-//
-//            BufferManager bm = new BufferManager(config, dm);
-//            bm.getPage(p00);
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-    ///TEST BUFFER MANAGER
+    //TEST BUFFER MANAGER
         try{
 
             DBConfig config = DBConfig.LoadDBConfig("src/config.json");
@@ -95,7 +54,7 @@ public class Main {
             }
 
 
-            ///TEST RELATION
+            //TEST RELATION
             List<ColInfo> colonne=new ArrayList<>();
             colonne.add(new ColInfo("nom", new TypeParam(10, TypeParam.ETypeParam.VARCHAR)));
             colonne.add(new ColInfo("prenom", new TypeParam(10, TypeParam.ETypeParam.CHAR)));
@@ -103,7 +62,7 @@ public class Main {
 
             Relation relation = new Relation("nina",colonne,new PageId(0,0),dm,bm);
             List<String> l= new ArrayList<>();
-            l.add("Nicolqs");
+            l.add("sdksdkglksdkskklsdjl");
             l.add("Fontqine");
             l.add("12");
             Record record= new Record(new RecordID(p4,0),l);

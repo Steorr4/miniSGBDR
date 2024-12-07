@@ -70,10 +70,9 @@ public class DBManager{
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             System.out.println(databases);
-            oos.writeObject(databases); //LUI
+            oos.writeObject(databases);
 
             for(Database db : databases.values()) {
-                System.out.println(db);
                 f = new File(config.getDbpath() + "/databases/DB"+i+".save");
                 f.createNewFile();
                 fos = new FileOutputStream(f);
@@ -149,7 +148,7 @@ public class DBManager{
             for(Relation table : tables.values()){
                 System.out.print(table+"(");
                 for (ColInfo col : table.getColonnes()){
-                    System.out.print(col.getNomCol()+":"+col.getTypeCol());
+                    System.out.print(col.getNomCol()+":"+col.getTypeCol()+",");
                 }
                 System.out.println(")");
             }

@@ -2,9 +2,14 @@ import fr.upc.mi.bdda.BufferManager.BufferManager;
 import fr.upc.mi.bdda.DataBaseManager.DBManager;
 import fr.upc.mi.bdda.DiskManager.DBConfig;
 import fr.upc.mi.bdda.DiskManager.DiskManager;
+import fr.upc.mi.bdda.DiskManager.PageId;
+import fr.upc.mi.bdda.FileAccess.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class SGBD {
     private DBConfig config;
@@ -58,22 +63,42 @@ public class SGBD {
             case "DATABASE" -> dbm.createDatabase(cmd[2]);
 
             case "TABLE" -> {
-                if(cmd.length != 3){
+                if(cmd.length != 4){
                     System.out.println("Missing argument.");
                     return;
                 }
 
-                String[] args = cmd[2].split("(,)");
+                StringTokenizer st = new StringTokenizer(cmd[3],"(),:");
+                List<ColInfo> colonnes = new ArrayList<>();
+                String colName;
+                Type colType = null;
 
-                for(String s : args){
-                    //TODO
-                    System.out.println(s);
+                while (st.hasMoreTokens()){
+                    colName = st.nextToken();
+                    switch (st.nextToken()){
+                        case "INT" -> colType = new TypeNonParam(TypeNonParam.ETypeNonParam.INT);
+                        case "REAL" -> colType = new TypeNonParam(TypeNonParam.ETypeNonParam.REAL);
+                        case "CHAR" -> colType = new TypeParam(Integer.parseInt(st.nextToken()), TypeParam.ETypeParam.CHAR);
+                        case "VARCHAR" -> colType = new TypeParam(Integer.parseInt(st.nextToken()), TypeParam.ETypeParam.VARCHAR);
+                    }
+                    colonnes.add(new ColInfo(colName, colType));
+                }
+                try {
+                    PageId pidHeaderPage = dm.allocPage(); // TODO Ajouter l'ecriture de int 0 au debut ?
+                    dbm.addTableToCurrentDatabase(new Relation(cmd[2], colonnes, pidHeaderPage, dm, bm));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
             default -> System.out.println("Incorrect(s) argument(s).");
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param cmd
+     */
     private void processSetCommand(String[] cmd){
         if(cmd.length != 3){
             System.out.println("Missing argument.");
@@ -118,7 +143,7 @@ public class SGBD {
         }
 
         switch (cmd[1]){
-            case "DATABASE" -> dbm.listDatabases();
+            case "DATABASES" -> dbm.listDatabases();
             case "TABLES" -> dbm.listTablesInCurrentDatabase();
             default -> System.out.println("Incorrect(s) argument(s).");
         }

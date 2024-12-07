@@ -3,18 +3,18 @@ package fr.upc.mi.bdda.DiskManager;
 //JAVA Imports
 import fr.upc.mi.bdda.BufferManager.CustomBuffer;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.List;
 
 /**
  * Classe qui s'occupe de la gestion de l'espace disque.
  * Les couches au-dessus y font appel allouer/desallouer une page ou lire/ecrire sur une page.
  * <br/>(Voir TP2-C pour comprendre le fonctionnement plus en détail)
  */
-public class DiskManager {
+public class DiskManager{
 	private final DBConfig config; // Instance de la config
-	private ArrayList<PageId> pagesLibres; // Array de pages libres attendant d'être allouées
+	private List<PageId> pagesLibres; // Array de pages libres attendant d'être allouées
 	private int nbFichiers; // Nombre de fichiers deja créés
 
 	/**
@@ -154,7 +154,7 @@ public class DiskManager {
 	}
 
 	//Getter
-	public ArrayList<PageId> getPagesLibres() {
+	public List<PageId> getPagesLibres() {
 		return pagesLibres;
 	}
 

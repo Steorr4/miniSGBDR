@@ -128,9 +128,9 @@ public class SGBD {
      * TODO
      */
     private void processQuitCommand(){
+        bm.flushBuffers();
         dm.saveState();
         dbm.saveState();
-        bm.flushBuffers();
     }
 
     public static void main(String[]args){

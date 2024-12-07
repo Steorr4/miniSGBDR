@@ -62,7 +62,6 @@ public class DBManager{
         current.listTables();
     }
 
-    //TODO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     public void saveState(){
         try {
             int i = 0;
@@ -121,7 +120,7 @@ public class DBManager{
     /**
      *
      */
-    private class Database implements Serializable {
+    private static class Database implements Serializable {
         private String name;
         private HashMap<String, Relation> tables;
 

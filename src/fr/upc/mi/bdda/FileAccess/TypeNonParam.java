@@ -5,13 +5,13 @@ import java.io.Serializable;
 /**
  * Classe pour représenter un type non paramétré dans une table.
  */
-public class TypeNonParam extends Type implements Serializable {
+public class TypeNonParam extends Type{
     ETypeNonParam type;
 
     /**
      * Enumérations des types non paramètrés possibles.
      */
-    public enum ETypeNonParam implements Serializable{
+    public enum ETypeNonParam{
         INT,
         REAL;
     }

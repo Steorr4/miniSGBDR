@@ -62,7 +62,7 @@ public class DBManager{
         current.listTables();
     }
 
-    // Va poser probeleme si plusieurs values pour une clef.
+    //TODO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     public void saveState(){
         try {
             int i = 0;
@@ -70,10 +70,13 @@ public class DBManager{
             File f = new File(config.getDbpath() + "/databases/nameDB.save");
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(new HashMap<>(databases));
+            System.out.println(databases);
+            oos.writeObject(databases); //LUI
 
             for(Database db : databases.values()) {
+                System.out.println(db);
                 f = new File(config.getDbpath() + "/databases/DB"+i+".save");
+                f.createNewFile();
                 fos = new FileOutputStream(f);
                 oos = new ObjectOutputStream(fos);
 
@@ -81,7 +84,7 @@ public class DBManager{
                 i++;
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -103,15 +106,16 @@ public class DBManager{
                 fis = new FileInputStream(f);
                 ois = new ObjectInputStream(fis);
 
-                databases.put(s,(Database) ois.readObject());
+                databases.put(s, (Database)ois.readObject());
+                i++;
             }
 
-        }catch (Exception e){
+        }catch (IOException e){
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
-
-
 
 
     /**

@@ -5,13 +5,13 @@ import java.io.Serializable;
 /**
  * Classe pour représenter un type paramétré dans une table.
  */
-public class TypeParam extends Type implements Serializable {
+public class TypeParam extends Type{
     ETypeParam type;
 
     /**
      * Enumérations des types paramètrés possibles.
      */
-    public enum ETypeParam implements Serializable{
+    public enum ETypeParam{
         CHAR,
         VARCHAR
     }

@@ -49,7 +49,6 @@ public class SGBD {
 
 
     private void processCreateCommand(String[] cmd){
-        System.out.println(cmd.length); //DEBUG
         if(cmd.length < 2){
             System.out.println("Missing argument.");
             return;
@@ -64,9 +63,11 @@ public class SGBD {
                     return;
                 }
 
-                String[] arg = cmd[2].split("(,)");
-                for(String s : arg){
+                String[] args = cmd[2].split("(,)");
+
+                for(String s : args){
                     //TODO
+                    System.out.println(s);
                 }
             }
             default -> System.out.println("Incorrect(s) argument(s).");
@@ -131,7 +132,6 @@ public class SGBD {
         dbm.saveState();
         bm.flushBuffers();
     }
-
 
     public static void main(String[]args){
         try {

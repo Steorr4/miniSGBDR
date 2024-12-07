@@ -1,17 +1,17 @@
 package fr.upc.mi.bdda.DataBaseManager;
 
 import fr.upc.mi.bdda.DiskManager.DBConfig;
+import fr.upc.mi.bdda.FileAccess.ColInfo;
 import fr.upc.mi.bdda.FileAccess.Relation;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Set;
 
-public class DBManager {
-    HashMap<String, Database> databases;
-    Database current;
+public class DBManager{
+    private HashMap<String, Database> databases;
+    private Database current;
 
-    DBConfig config;
+    private transient DBConfig config;
 
     public DBManager(DBConfig config){
         this.current = null;
@@ -41,6 +41,7 @@ public class DBManager {
     }
 
     public void removeDatabase(String dbName){
+        if(dbName.equals(current.name)) current = null;
         databases.remove(dbName);
     }
 
@@ -49,6 +50,7 @@ public class DBManager {
     }
 
     public void removeDatabases(){
+        current = null;
         databases.clear();
     }
 
@@ -65,13 +67,13 @@ public class DBManager {
         try {
             int i = 0;
 
-            File f = new File(config.getDbpath() + "/databases/nameDB");
+            File f = new File(config.getDbpath() + "/databases/nameDB.save");
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(databases.keySet());
+            oos.writeObject(new HashMap<>(databases));
 
             for(Database db : databases.values()) {
-                f = new File(config.getDbpath() + "/databases/DB"+i);
+                f = new File(config.getDbpath() + "/databases/DB"+i+".save");
                 fos = new FileOutputStream(f);
                 oos = new ObjectOutputStream(fos);
 
@@ -80,7 +82,7 @@ public class DBManager {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
@@ -89,14 +91,15 @@ public class DBManager {
         try{
             int i = 0;
 
-            File f = new File(config.getDbpath() + "/databases/nameDB");
+            File f = new File(config.getDbpath() + "/databases/nameDB.save");
+            f.createNewFile();
             FileInputStream fis = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            Set<String> dbnames = (Set<String>)ois.readObject();
+            HashMap<String, Database> dbnames = (HashMap<String, Database>) ois.readObject();
 
-            for(String s: dbnames){
-                f = new File(config.getDbpath() + "/databases/DB"+i);
+            for(String s: dbnames.keySet()){
+                f = new File(config.getDbpath() + "/databases/DB"+i+".save");
                 fis = new FileInputStream(f);
                 ois = new ObjectInputStream(fis);
 
@@ -140,7 +143,13 @@ public class DBManager {
         }
 
         public void listTables(){
-            for(String tableName : tables.keySet()) System.out.println(tableName);
+            for(Relation table : tables.values()){
+                System.out.print(table+"(");
+                for (ColInfo col : table.getColonnes()){
+                    System.out.print(col.getNomCol()+":"+col.getTypeCol());
+                }
+                System.out.println(")");
+            }
         }
     }
 }

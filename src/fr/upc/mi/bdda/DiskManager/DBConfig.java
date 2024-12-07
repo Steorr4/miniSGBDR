@@ -50,7 +50,7 @@ public class DBConfig {
 	 * @throws FileNotFoundException si le chemin vers le fichier config est erronné.
 	 * @throws IOException un champ du fichier est incorrecte.
 	 */
-	public static DBConfig LoadDBConfig(String fic_config) throws FileNotFoundException,
+	public static DBConfig loadDBConfig(String fic_config) throws FileNotFoundException,
             IOException{
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -74,15 +74,5 @@ public class DBConfig {
 	}
 	public String getBm_policy() {
 		return bm_policy;
-	}
-
-	//ToString
-	@Override
-	public String toString() {
-		return "DBConfig : {" +
-				"dbpath='" + dbpath + '\'' +
-				", pagesize=" + pagesize +
-				", dm_maxfilesize=" + dm_maxfilesize +
-				'}';
 	}
 }

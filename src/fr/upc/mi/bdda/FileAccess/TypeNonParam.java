@@ -13,7 +13,7 @@ public class TypeNonParam extends Type implements Serializable {
      */
     public enum ETypeNonParam implements Serializable{
         INT,
-        REAL
+        REAL;
     }
 
     /**
@@ -29,5 +29,12 @@ public class TypeNonParam extends Type implements Serializable {
     //Getter
     public ETypeNonParam getType() {
         return type;
+    }
+
+    //toString
+    @Override
+    public String toString() {
+        if(type == ETypeNonParam.INT) return "INT";
+        return "FLOAT";
     }
 }

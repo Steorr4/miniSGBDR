@@ -38,7 +38,7 @@ public class DiskManager {
 	 * @return L'identifiant de la page allouee.
 	 * @throws IOException si une erreur est survenue à la création d'un fichier.
 	 */
-	public PageId AllocPage() throws IOException{
+	public PageId allocPage() throws IOException{
 
 		//S'il y a une page libre, alors on retourne la page en question
 		if(!pagesLibres.isEmpty()) {
@@ -65,7 +65,7 @@ public class DiskManager {
 	 * @param pageId la page demmandée.
 	 * @param buff le buffer dans lequel on souhaite copier la page.
 	 */
-	public void ReadPage(PageId pageId, CustomBuffer buff)  {
+	public void readPage(PageId pageId, CustomBuffer buff)  {
 		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
@@ -91,7 +91,7 @@ public class DiskManager {
 	 * @param pageId la page indiquée.
 	 * @param buff le buffer dans lequel sont contenues les données que l'on souhaite écrire sur disque.
 	 */
-	public void WritePage(PageId pageId, CustomBuffer buff) {
+	public void writePage(PageId pageId, CustomBuffer buff) {
 		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
@@ -115,14 +115,14 @@ public class DiskManager {
 	 *
 	 * @param pageId la page à désallouer
 	 */
-	public void DeallocPage(PageId pageId) {
+	public void deallocPage(PageId pageId) {
 		pagesLibres.add(pageId);
 	}
 
 	/**
 	 * Enregistre la liste des pages libres dans un fichier dm.save placé à la racine du dossier de la BDD.
 	 */
-	public void SaveState() {
+	public void saveState() {
 		try {
 
 			FileOutputStream fos = new FileOutputStream(config.getDbpath()+"/dm.save");
@@ -139,10 +139,12 @@ public class DiskManager {
 	/**
 	 * Charge la liste des pages vides depuis le fichier dm.save généré par la méthode SaveState()
 	 */
-	public void LoadState() {
+	public void loadState() {
 		try {
 
-			FileInputStream fis = new FileInputStream(config.getDbpath()+"/dm.save");
+			File f = new File(config.getDbpath()+"/dm.save");
+			f.createNewFile();
+			FileInputStream fis = new FileInputStream(f);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			this.pagesLibres = (ArrayList<PageId>) ois.readObject();
 

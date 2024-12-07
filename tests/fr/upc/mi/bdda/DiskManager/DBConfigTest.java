@@ -21,7 +21,7 @@ class DBConfigTest {
     @ValueSource(strings="./fauxchemin")
     void testLoadDBConfigMissingFile(String fic_config){
         assertThrows(IOException.class,()->
-                DBConfig.LoadDBConfig(fic_config));
+                DBConfig.loadDBConfig(fic_config));
     }
 
     @ParameterizedTest

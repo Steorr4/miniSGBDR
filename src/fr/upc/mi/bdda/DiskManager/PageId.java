@@ -31,14 +31,6 @@ public class PageId implements Serializable {
 
 	//Object Overrides
 	@Override
-	public String toString() {
-		return "PageId : {" +
-				"fileIdx=" + fileIdx +
-				", pageIdx=" + pageIdx +
-				'}';
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof PageId)){ return false;}

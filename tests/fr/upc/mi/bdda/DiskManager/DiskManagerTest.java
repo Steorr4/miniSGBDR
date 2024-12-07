@@ -24,7 +24,7 @@ class DiskManagerTest {
 
     @Test
     void testAllocPageFileCreation() throws IOException{
-        dm.AllocPage();
+        dm.allocPage();
         File file = new File(config.getDbpath()+"/BinData/F"+1+".rsdb");
         assertTrue(file.exists());
     }
@@ -32,7 +32,7 @@ class DiskManagerTest {
     @Test
     void testAllocPageFileCreationAfterOneFileComplete() throws IOException{
         for(int i = 0; i<=config.getDm_maxfilesize()/config.getPagesize(); i++){
-            dm.AllocPage();
+            dm.allocPage();
         }
         File file = new File(config.getDbpath()+"/BinData/F"+2+".rsdb");
         assertTrue(file.exists());
@@ -40,8 +40,8 @@ class DiskManagerTest {
 
     @Test
     void testReadPage() throws IOException {
-        dm.AllocPage();
-        PageId pid = dm.AllocPage();
+        dm.allocPage();
+        PageId pid = dm.allocPage();
         CustomBuffer buff = new CustomBuffer(pid, config);
         String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
 
@@ -50,14 +50,14 @@ class DiskManagerTest {
         raf.write(5);
         raf.close();
 
-        dm.ReadPage(pid, buff);
+        dm.readPage(pid, buff);
         assertEquals(5,buff.getByte());
     }
 
     @Test
     void testWritePage() throws IOException {
-        dm.AllocPage();
-        PageId pid = dm.AllocPage();
+        dm.allocPage();
+        PageId pid = dm.allocPage();
         CustomBuffer buff = new CustomBuffer(pid, config);
         String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
 
@@ -65,38 +65,38 @@ class DiskManagerTest {
         RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
         raf.seek(config.getPagesize());
 
-        dm.WritePage(pid, buff);
+        dm.writePage(pid, buff);
         assertEquals(127,raf.readInt());
         raf.close();
     }
 
     @Test
     void testDeallocPage() throws IOException {
-        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
-        PageId pid = dm.AllocPage();
-        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.allocPage();
+        PageId pid = dm.allocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.allocPage();
 
-        dm.DeallocPage(pid);
+        dm.deallocPage(pid);
         assertTrue(dm.getPagesLibres().contains(pid));
     }
 
     @Test
     void testSaveLoadState() throws IOException {
 
-        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
-        PageId pid1 = dm.AllocPage();
-        PageId pid2 = dm.AllocPage();
-        PageId pid3 = dm.AllocPage();
-        for(int i = 0; i < config.getPagesize(); i++) dm.AllocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.allocPage();
+        PageId pid1 = dm.allocPage();
+        PageId pid2 = dm.allocPage();
+        PageId pid3 = dm.allocPage();
+        for(int i = 0; i < config.getPagesize(); i++) dm.allocPage();
 
-        dm.DeallocPage(pid1);
-        dm.DeallocPage(pid2);
+        dm.deallocPage(pid1);
+        dm.deallocPage(pid2);
 
-        dm.SaveState();
+        dm.saveState();
         File file = new File(config.getDbpath()+"/dm.save");
         assertTrue(file.exists());
 
-        dm.LoadState();
+        dm.loadState();
         assertTrue(dm.getPagesLibres().contains(pid1) &&
                 dm.getPagesLibres().contains(pid2));
         assertFalse(dm.getPagesLibres().contains(pid3));

@@ -58,8 +58,6 @@ public class Relation implements Serializable {
      */
     public int writeRecordToBuffer(Record rec, CustomBuffer buff, int pos){
 
-        //ByteBuffer bb = buff.getBb(); // On récupère le buffer pour ecrire dedans
-
         int total= 4*(nbCol+1); // Reservation de la table de pointage de la relation
         int ptPos = pos+total; // Pointeur de la position courante qui commence apres la talbe de pointage
 
@@ -166,7 +164,7 @@ public class Relation implements Serializable {
         //TODO : besoin de creer une nouvelle header page si implementation du chainage
         try {
 
-            PageId pid = dm.AllocPage();
+            PageId pid = dm.allocPage();
             CustomBuffer buffer = bm.getPage(headerPageID);
             int indice = buffer.getInt(0);
 
@@ -246,7 +244,7 @@ public class Relation implements Serializable {
 
         int nbRecords = buffer.getInt(bm.getConfig().getPagesize() - 8);
         List<Record> recordList = new ArrayList<>(nbRecords);
-        int debRec, lenghtRec;
+        int debRec;
 
         for (int i = 2; i <= nbRecords+1; i++){
 
@@ -254,7 +252,6 @@ public class Relation implements Serializable {
             Record rec = new Record(new ArrayList<>(nbCol));
             readFromBuffer(rec, buffer, debRec);
             recordList.add(rec);
-
         }
 
         buffer.setPos(0);
@@ -332,6 +329,10 @@ public class Relation implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public List<ColInfo> getColonnes() {
+        return colonnes;
     }
 
     public int getNbCol() {

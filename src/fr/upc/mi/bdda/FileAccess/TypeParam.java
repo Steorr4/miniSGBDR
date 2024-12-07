@@ -30,4 +30,11 @@ public class TypeParam extends Type implements Serializable {
     public ETypeParam getType() {
         return type;
     }
+
+    //toString
+    @Override
+    public String toString() {
+        if(type == ETypeParam.CHAR) return "CHAR(" + this.getTaille() + ")";
+        return "VARCHAR(" + this.getTaille() + ")";
+    }
 }

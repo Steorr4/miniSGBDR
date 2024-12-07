@@ -62,7 +62,7 @@ public class BufferManager {
         */
         if (bufferList.size()<bufferCount){
             CustomBuffer cb = new CustomBuffer(pid, config);
-            dm.ReadPage(pid,cb);
+            dm.readPage(pid,cb);
             bufferList.add(cb);
             return cb;
         }
@@ -71,7 +71,7 @@ public class BufferManager {
         CustomBuffer oldBuffer = remplacement();
 
         // Ecriture sur disque si la page a été modif, remplacement de l'ancienne page par la nouvelle
-        if(oldBuffer.isDirty_flag()) dm.WritePage(oldBuffer.getPid(), oldBuffer);
+        if(oldBuffer.isDirty_flag()) dm.writePage(oldBuffer.getPid(), oldBuffer);
         CustomBuffer cb = new CustomBuffer(pid, config);
         bufferList.remove(oldBuffer);
         bufferList.add(cb);
@@ -153,9 +153,9 @@ public class BufferManager {
     /**
      * Ecrit sur disque toutes les pages modifiées jusque-là et vide les cadres de page.
      */
-    void flushBuffers(){
+    public void flushBuffers(){
         for (CustomBuffer buff : bufferList){
-            if (buff.isDirty_flag()) dm.WritePage(buff.getPid(),buff);
+            if (buff.isDirty_flag()) dm.writePage(buff.getPid(),buff);
         }
         bufferList.clear();
     }
@@ -167,7 +167,6 @@ public class BufferManager {
     public void setBufferList(List<CustomBuffer> bufferList) {
         this.bufferList = bufferList;
     }
-
     public long getTime() {
         return time;
     }

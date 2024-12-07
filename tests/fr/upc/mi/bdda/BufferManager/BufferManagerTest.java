@@ -23,11 +23,11 @@ class BufferManagerTest {
         config = new DBConfig("./DB", 256, 1024, 3, "MRU");
         dm = new DiskManager(config);
         bm = new BufferManager(config, dm);
-        pid = dm.AllocPage();
+        pid = dm.allocPage();
 
         CustomBuffer buff = new CustomBuffer(pid, config);
         buff.putInt(0, 123);
-        dm.WritePage(pid, buff);
+        dm.writePage(pid, buff);
     }
 
     @Test
@@ -55,16 +55,16 @@ class BufferManagerTest {
     void testGetPageBufferListFull() throws BufferManager.BufferCountExcededException, IOException {
         bm.getPage(pid);
 
-        PageId p1 = dm.AllocPage();
-        PageId p2 = dm.AllocPage();
-        PageId p3 = dm.AllocPage();
+        PageId p1 = dm.allocPage();
+        PageId p2 = dm.allocPage();
+        PageId p3 = dm.allocPage();
 
         CustomBuffer buff = new CustomBuffer(pid, config);
         buff.putInt(0, 123);
 
-        dm.WritePage(p1, buff);
-        dm.WritePage(p2, buff);
-        dm.WritePage(p3, buff);
+        dm.writePage(p1, buff);
+        dm.writePage(p2, buff);
+        dm.writePage(p3, buff);
 
         bm.getPage(p1);
         bm.getPage(p2);

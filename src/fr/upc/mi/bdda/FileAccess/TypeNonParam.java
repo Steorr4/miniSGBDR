@@ -1,15 +1,17 @@
 package fr.upc.mi.bdda.FileAccess;
 
+import java.io.Serializable;
+
 /**
  * Classe pour représenter un type non paramétré dans une table.
  */
-public class TypeNonParam extends Type {
+public class TypeNonParam extends Type implements Serializable {
     ETypeNonParam type;
 
     /**
      * Enumérations des types non paramètrés possibles.
      */
-    public enum ETypeNonParam{
+    public enum ETypeNonParam implements Serializable{
         INT,
         REAL
     }

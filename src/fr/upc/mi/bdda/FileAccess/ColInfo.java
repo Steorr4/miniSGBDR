@@ -1,9 +1,11 @@
 package fr.upc.mi.bdda.FileAccess;
 
+import java.io.Serializable;
+
 /**
  * Classe représentant le nom et le type d'une colonne dans une relation.
  */
-public class ColInfo {
+public class ColInfo implements Serializable {
     private String nomCol;
     private Type typeCol;
 

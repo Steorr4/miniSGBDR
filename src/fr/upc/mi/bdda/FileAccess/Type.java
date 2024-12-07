@@ -1,9 +1,11 @@
 package fr.upc.mi.bdda.FileAccess;
 
+import java.io.Serializable;
+
 /**
  * Classe générale pour représenter un type dans une table
  */
-public abstract class Type {
+public abstract class Type implements Serializable {
     int taille; // Taille en Byte
 
     /**

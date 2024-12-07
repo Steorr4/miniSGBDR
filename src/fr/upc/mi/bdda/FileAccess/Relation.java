@@ -6,7 +6,7 @@ import fr.upc.mi.bdda.DiskManager.*;
 
 //JAVA Imports
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +16,15 @@ import java.util.List;
  * (Rajout/Supression/Consultation des tuples).
  * </br>(Voir TP4-A pour comprendre le fonctionnement plus en détail)
  */
-public class Relation {
+public class Relation implements Serializable {
 
     private String name; // Nom de la table
     private int nbCol; // Nombre de colonnes de la table
     private List<ColInfo> colonnes; // Liste des colonnes de la table
     private PageId headerPageID; // Pointeur vers la HeaderPage
 
-    private final DiskManager dm;
-    private final BufferManager bm;
+    private transient final DiskManager dm;
+    private transient final BufferManager bm;
 
     /**
      * Main constructor.
@@ -330,4 +330,11 @@ public class Relation {
         return records;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getNbCol() {
+        return nbCol;
+    }
 }

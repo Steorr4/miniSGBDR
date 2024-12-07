@@ -1,15 +1,17 @@
 package fr.upc.mi.bdda.FileAccess;
 
+import java.io.Serializable;
+
 /**
  * Classe pour représenter un type paramétré dans une table.
  */
-public class TypeParam extends Type {
+public class TypeParam extends Type implements Serializable {
     ETypeParam type;
 
     /**
      * Enumérations des types paramètrés possibles.
      */
-    public enum ETypeParam{
+    public enum ETypeParam implements Serializable{
         CHAR,
         VARCHAR
     }

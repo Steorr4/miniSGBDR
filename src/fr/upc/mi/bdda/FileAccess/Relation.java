@@ -159,8 +159,10 @@ public class Relation {
     }
 
     //TD5 :
-    // TODO : PAS LE DROIT DE FAIRE ACCES AU DiskManager READPAGE/WRITEPAGE
-    public void addDataPage(){
+    /**
+     * TODO
+     */
+    private void addDataPage(){
         //TODO : besoin de creer une nouvelle header page si implementation du chainage
         try {
 
@@ -181,7 +183,7 @@ public class Relation {
         }
     }
 
-    public PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
+    private PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
         CustomBuffer buffer = bm.getPage(headerPageID);
 
         int indice = buffer.getInt(0);
@@ -191,14 +193,24 @@ public class Relation {
 
             if(buffer.getInt(indice*12+12)>=sizeRecord){
                 buffer.setPos(0);
+                bm.freePage(headerPageID, false);
                 return pid;
             }
         }
         buffer.setPos(0);
+        bm.freePage(headerPageID, false);
         return null;
     }
 
-    public RecordID writeRecordToDataPage(Record record, PageId pid) throws BufferManager.BufferCountExcededException {
+    /**
+     * TODO
+     *
+     * @param record
+     * @param pid
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
+    private RecordID writeRecordToDataPage(Record record, PageId pid) throws BufferManager.BufferCountExcededException {
 
         CustomBuffer buffer = bm.getPage(pid);
 
@@ -221,7 +233,14 @@ public class Relation {
 
     }
 
-    public List<Record> getRecordsInDataPage(PageId pid) throws BufferManager.BufferCountExcededException {
+    /**
+     * TODO
+     *
+     * @param pid
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
+    private List<Record> getRecordsInDataPage(PageId pid) throws BufferManager.BufferCountExcededException {
 
         CustomBuffer buffer = bm.getPage(pid);
 
@@ -243,7 +262,13 @@ public class Relation {
         return recordList;
     }
 
-    public List<PageId> getDataPages() throws BufferManager.BufferCountExcededException {
+    /**
+     * TODO
+     *
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
+    private List<PageId> getDataPages() throws BufferManager.BufferCountExcededException {
 
         CustomBuffer buffer = bm.getPage(headerPageID);
         int nbPage =  buffer.getInt(0);
@@ -260,6 +285,49 @@ public class Relation {
         return pids;
     }
 
+    /**
+     * TODO
+     *
+     * @param rec
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
+    public RecordID insertRecord(Record rec) throws BufferManager.BufferCountExcededException {
 
+        int tailleRec = 4*(nbCol+1);
+        for (int i = 0; i < nbCol; i++){
+            Type type = colonnes.get(i).getTypeCol();
+            if (type instanceof TypeNonParam){
+                tailleRec += 4;
+            }else{
+                tailleRec += rec.getVal().get(i).length();
+            }
+        }
+
+        PageId pid = getFreeDataPage(tailleRec);
+        if (pid == null){
+            addDataPage();
+            pid = getFreeDataPage(tailleRec);
+        }
+
+        return writeRecordToDataPage(rec, pid);
+    }
+
+    /**
+     * TODO
+     *
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
+    public List<Record> getAllRecords() throws BufferManager.BufferCountExcededException {
+        List<PageId> dataPages = getDataPages();
+        List<Record> records = new ArrayList<>();
+
+        for(PageId pid : dataPages){
+            List<Record> recPage = getRecordsInDataPage(pid);
+            records.addAll(recPage);
+        }
+        return records;
+    }
 
 }

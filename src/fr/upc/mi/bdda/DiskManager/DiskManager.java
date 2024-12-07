@@ -1,6 +1,8 @@
 package fr.upc.mi.bdda.DiskManager;
 
 //JAVA Imports
+import fr.upc.mi.bdda.BufferManager.CustomBuffer;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.io.*;
@@ -22,7 +24,7 @@ public class DiskManager {
 	 */
 	public DiskManager(DBConfig dbConfig) {
 		config=dbConfig;
-		pagesLibres= new ArrayList<PageId>();
+		pagesLibres = new ArrayList<>();
 		nbFichiers=0;
 	}
 
@@ -63,7 +65,7 @@ public class DiskManager {
 	 * @param pageId la page demmandée.
 	 * @param buff le buffer dans lequel on souhaite copier la page.
 	 */
-	public void ReadPage(PageId pageId, ByteBuffer buff)  {
+	public void ReadPage(PageId pageId, CustomBuffer buff)  {
 		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
@@ -71,14 +73,11 @@ public class DiskManager {
 			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
-			buff.clear();
-			buff.position(0);
-
+			buff.setPos(0);
 			byte[] data = new byte[config.getPagesize()];
 			for(int i = 0; i < data.length; i++) data[i] = raf.readByte();
 
-			buff.put(data);
-			buff.position(0);
+			buff.putBytes(data);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,7 +91,7 @@ public class DiskManager {
 	 * @param pageId la page indiquée.
 	 * @param buff le buffer dans lequel sont contenues les données que l'on souhaite écrire sur disque.
 	 */
-	public void WritePage(PageId pageId, ByteBuffer buff) {
+	public void WritePage(PageId pageId, CustomBuffer buff) {
 		String pathFichier = config.getDbpath()+"/BinData/F"+pageId.getFileIdx()+".rsdb";
 
 		try {
@@ -100,12 +99,10 @@ public class DiskManager {
 			RandomAccessFile raf = new RandomAccessFile(new File(pathFichier),"rw");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
-			buff.position(0);
+			buff.setPos(0);
 			byte[] data = new byte[buff.remaining()];
-			buff.get(data);
-
+			buff.getBytes(data);
 			raf.write(data);
-			buff.position(0);
 
 		}catch (IOException e) {
 			e.printStackTrace();

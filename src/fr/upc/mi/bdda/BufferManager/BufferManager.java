@@ -62,7 +62,7 @@ public class BufferManager {
         */
         if (bufferList.size()<bufferCount){
             CustomBuffer cb = new CustomBuffer(pid, config);
-            dm.ReadPage(pid,cb.getBb());
+            dm.ReadPage(pid,cb);
             bufferList.add(cb);
             return cb;
         }
@@ -71,7 +71,7 @@ public class BufferManager {
         CustomBuffer oldBuffer = remplacement();
 
         // Ecriture sur disque si la page a été modif, remplacement de l'ancienne page par la nouvelle
-        if(oldBuffer.isDirty_flag()) dm.WritePage(oldBuffer.getPid(), oldBuffer.getBb());
+        if(oldBuffer.isDirty_flag()) dm.WritePage(oldBuffer.getPid(), oldBuffer);
         CustomBuffer cb = new CustomBuffer(pid, config);
         bufferList.remove(oldBuffer);
         bufferList.add(cb);
@@ -155,7 +155,7 @@ public class BufferManager {
      */
     void flushBuffers(){
         for (CustomBuffer buff : bufferList){
-            if (buff.isDirty_flag()) dm.WritePage(buff.getPid(),buff.getBb());
+            if (buff.isDirty_flag()) dm.WritePage(buff.getPid(),buff);
         }
         bufferList.clear();
     }
@@ -183,4 +183,6 @@ public class BufferManager {
             super(message);
         }
     }
+
+    public DBConfig getConfig() {return config;}
 }

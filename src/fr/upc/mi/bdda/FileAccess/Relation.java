@@ -5,8 +5,10 @@ import fr.upc.mi.bdda.BufferManager.*;
 import fr.upc.mi.bdda.DiskManager.*;
 
 //JAVA Imports
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,26 +58,26 @@ public class Relation {
      */
     public int writeRecordToBuffer(Record rec, CustomBuffer buff, int pos){
 
-        ByteBuffer bb = buff.getBb(); // On récupère le buffer pour ecrire dedans
+        //ByteBuffer bb = buff.getBb(); // On récupère le buffer pour ecrire dedans
 
         int total= 4*(nbCol+1); // Reservation de la table de pointage de la relation
         int ptPos = pos+total; // Pointeur de la position courante qui commence apres la talbe de pointage
 
         for(int i = 0; i<nbCol; i++){
 
-            bb.putInt(pos+4*i,ptPos);
+            buff.putInt(pos+4*i, ptPos);
             Type type = colonnes.get(i).getTypeCol();
 
             if(type instanceof TypeNonParam){
                 switch (((TypeNonParam) type).getType()){
 
                     case INT:
-                        bb.putInt(ptPos, Integer.parseInt(rec.getVal().get(i)));
+                        buff.putInt(ptPos, Integer.parseInt(rec.getVal().get(i)));
                         total += type.getTaille();
                         break;
 
                     case REAL:
-                        bb.putFloat(ptPos, Float.parseFloat(rec.getVal().get(i)));
+                        buff.putFloat(ptPos, Float.parseFloat(rec.getVal().get(i)));
                         total += type.getTaille();
                         break;
                 }
@@ -87,14 +89,14 @@ public class Relation {
                         StringBuilder sb = new StringBuilder(rec.getVal().get(i));
                         for(int j = rec.getVal().get(i).length(); j< type.getTaille();j++) sb.append(" ");
 
-                        bb.put(ptPos, sb.toString().getBytes(StandardCharsets.UTF_8));
+                        buff.putBytes(ptPos, sb.toString().getBytes(StandardCharsets.UTF_8));
 
                         total += type.getTaille();
                         ptPos += type.getTaille();
                         break;
 
                     case VARCHAR:
-                        bb.put(ptPos, rec.getVal().get(i).getBytes());
+                        buff.putBytes(ptPos, rec.getVal().get(i).getBytes());
                         ptPos += rec.getVal().get(i).length();
                         total += rec.getVal().get(i).length();
                 }
@@ -113,8 +115,6 @@ public class Relation {
      */
     public int readFromBuffer(Record rec, CustomBuffer buff, int pos) {
 
-        ByteBuffer bb = buff.getBb();
-
         int total= 4*(nbCol+1);
         int ptPos;
         List<String> listVal = rec.getVal();
@@ -126,29 +126,29 @@ public class Relation {
             if(type instanceof TypeNonParam){
                 switch (((TypeNonParam) type).getType()){
                     case INT:
-                        ptPos = bb.getInt(pos);
+                        ptPos = buff.getInt(pos);
                         pos+=4;
 
-                        listVal.set(i,Integer.toString(bb.getInt(ptPos)));
+                        listVal.set(i,Integer.toString(buff.getInt(ptPos)));
                         total+=4;
                         break;
 
                     case REAL:
-                        ptPos = bb.getInt(pos);
+                        ptPos = buff.getInt(pos);
                         pos+=4;
 
-                        listVal.set(i,Float.toString(bb.getFloat(ptPos)));
+                        listVal.set(i,Float.toString(buff.getFloat(ptPos)));
                         total+=4;
                         break;
                 }
             }else {
-                ptPos = bb.getInt(pos);
+                ptPos = buff.getInt(pos);
                 pos+=4;
 
-                int length = bb.getInt(pos)-ptPos;
+                int length = buff.getInt(pos)-ptPos;
                 byte[] b = new byte[length];
-                bb.position(ptPos);
-                bb.get(b,0,length);
+                buff.setPos(ptPos);
+                buff.getBytes(b,0,length);
 
                 listVal.set(i,new String(b, StandardCharsets.UTF_8));
                 total+=length;
@@ -161,7 +161,105 @@ public class Relation {
     //TD5 :
     // TODO : PAS LE DROIT DE FAIRE ACCES AU DiskManager READPAGE/WRITEPAGE
     public void addDataPage(){
-        
+        //TODO : besoin de creer une nouvelle header page si implementation du chainage
+        try {
+
+            PageId pid = dm.AllocPage();
+            CustomBuffer buffer = bm.getPage(headerPageID);
+            int indice = buffer.getInt(0);
+
+            buffer.putInt(indice*12+4, pid.getFileIdx());
+            buffer.putInt(indice*12+8, pid.getPageIdx());
+            buffer.putInt(bm.getConfig().getPagesize());
+
+            buffer.putInt(indice+1);
+
+            bm.freePage(headerPageID, true);
+
+        } catch (IOException | BufferManager.BufferCountExcededException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    public PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
+        CustomBuffer buffer = bm.getPage(headerPageID);
+
+        int indice = buffer.getInt(0);
+
+        for(int i=0; i<indice; i++){
+            PageId pid = new PageId(buffer.getInt(indice*12+4), buffer.getInt(indice*12+8));
+
+            if(buffer.getInt(indice*12+12)>=sizeRecord){
+                buffer.setPos(0);
+                return pid;
+            }
+        }
+        buffer.setPos(0);
+        return null;
+    }
+
+    public RecordID writeRecordToDataPage(Record record, PageId pid) throws BufferManager.BufferCountExcededException {
+
+        CustomBuffer buffer = bm.getPage(pid);
+
+        int debRec = buffer.getInt(bm.getConfig().getPagesize()-4);
+
+        int taille = writeRecordToBuffer(record, buffer, debRec);
+        buffer.putInt(bm.getConfig().getPagesize()-4, debRec+taille);
+        int nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
+
+        buffer.putInt(bm.getConfig().getPagesize()-(nbSlot+1)*8, debRec);
+        buffer.putInt(taille);
+
+        buffer.putInt(bm.getConfig().getPagesize()-8,++nbSlot);
+
+        record.setRid(new RecordID(pid,nbSlot));
+
+        buffer.setPos(0);
+        bm.freePage(pid,true);
+        return record.getRid();
+
+    }
+
+    public List<Record> getRecordsInDataPage(PageId pid) throws BufferManager.BufferCountExcededException {
+
+        CustomBuffer buffer = bm.getPage(pid);
+
+        int nbRecords = buffer.getInt(bm.getConfig().getPagesize() - 8);
+        List<Record> recordList = new ArrayList<>(nbRecords);
+        int debRec, lenghtRec;
+
+        for (int i = 2; i <= nbRecords+1; i++){
+
+            debRec = buffer.getInt(bm.getConfig().getPagesize()-8*i);
+            Record rec = new Record(new ArrayList<>(nbCol));
+            readFromBuffer(rec, buffer, debRec);
+            recordList.add(rec);
+
+        }
+
+        buffer.setPos(0);
+        bm.freePage(pid,false);
+        return recordList;
+    }
+
+    public List<PageId> getDataPages() throws BufferManager.BufferCountExcededException {
+
+        CustomBuffer buffer = bm.getPage(headerPageID);
+        int nbPage =  buffer.getInt(0);
+        List<PageId> pids = new ArrayList<>(nbPage);
+
+        for(int i = 0; i < nbPage; i++){
+
+            PageId pid = new PageId(buffer.getInt(i*12+4), buffer.getInt(i*12+8));
+            pids.add(pid);
+
+        }
+        buffer.setPos(0);
+        bm.freePage(headerPageID, false);
+        return pids;
+    }
+
+
 
 }

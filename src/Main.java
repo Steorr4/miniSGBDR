@@ -65,7 +65,7 @@ public class Main {
             l.add("sdksdkglksdkskklsdjl");
             l.add("Fontqine");
             l.add("12");
-            Record record= new Record(new RecordID(p4,0),l);
+            Record record = new Record(l);
 
 
             int total= relation.writeRecordToBuffer(record,cb,0);

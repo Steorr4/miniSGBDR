@@ -13,11 +13,10 @@ public class Record {
     /**
      * Main constructor.
      *
-     * @param rid l'ID du tuple.
      * @param val la valeur du tuple.
      */
-    public Record(RecordID rid, List<String> val) {
-        this.rid = rid;
+    public Record( List<String> val) {
+        this.rid = null;
         this.val = val;
     }
 

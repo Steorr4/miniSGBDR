@@ -9,7 +9,7 @@ public class TypeNonParam extends Type {
     /**
      * Enumérations des types non paramètrés possibles.
      */
-    public static enum ETypeNonParam{
+    public enum ETypeNonParam{
         INT,
         REAL
     }

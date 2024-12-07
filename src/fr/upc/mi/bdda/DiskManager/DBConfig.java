@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class DBConfig {
 	private final String dbpath; // Chemin vers la base de données
-	private final int pagesize; // Taille alloue a une page
+	private final int pagesize; // Taille allouée à une page
 	private final int dm_maxfilesize;	// Taille maximum d'un fichier .rsbd
 	private final int bm_buffercount; // Nombre de cadre de page
 	private final String bm_policy; // Politique de remplacement
@@ -24,12 +24,11 @@ public class DBConfig {
 	 * @param dbpath le chemin vers la Base de donnée.
 	 * @param pagesize la taille d'une page.
 	 * @param dm_maxfilesize la taille d'un fichier rsdb.
-	 * @param bm_buffercount le nombre de cadre de page max pouvant etre load en mémoire.
+	 * @param bm_buffercount le nombre de cadres de page max pouvant etre load en mémoire.
 	 * @param bm_policy la politique de remplacement utilisée pour échanger les pages load en mémoire (LRU/MRU).
 	 */
 	@ConstructorProperties({"dbpath", "pagesize", "dm_maxfilesize",
 			"bm_buffercount", "bm_policy"})
-	/* Pour que le mapper comprenne comment construire une instance */
 	public DBConfig(String dbpath, int pagesize, int dm_maxfilesize, int bm_buffercount, String bm_policy) {
 		if(pagesize <= 0 || dm_maxfilesize <= 0 ||
 			bm_buffercount <= 0){

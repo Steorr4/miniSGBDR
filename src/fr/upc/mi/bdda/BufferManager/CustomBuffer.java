@@ -30,6 +30,88 @@ public class CustomBuffer {
         this.time = 0;
     }
 
+    public int remaining(){
+        return bb.remaining();
+    }
+
+    public void setPos(int i){
+        bb.position(i);
+    }
+
+    public int getPos(){
+        return bb.position();
+    }
+
+    public void putInt(int pos, int value){
+        bb.putInt(pos, value);
+    }
+
+    public void putInt(int value){;
+        bb.putInt(value);
+        bb.position(0);
+    }
+
+    public int getInt(int pos){
+        int value = bb.getInt(pos);
+        bb.position(0);
+        return value;
+    }
+
+    public void putFloat(int pos, float value){
+        bb.putFloat(pos, value);
+    }
+
+    public void putFloat(float value){
+        bb.putFloat(value);
+        bb.position(0);
+    }
+
+    public float getFloat(int pos){
+        float value = bb.getFloat(pos);
+        bb.position(0);
+        return value;
+    }
+
+    public void putChar(int pos, char c){
+        bb.putChar(pos, c);
+    }
+
+    public void putChar(char c){
+        bb.putChar(c);
+        bb.position(0);
+    }
+
+    public char getChar(int pos){
+        char value = bb.getChar(pos);
+        bb.position(0);
+        return value;
+    }
+
+    public void putBytes(byte[] data){
+        bb.put(data);
+        bb.position(0);
+    }
+
+    public void putBytes(int pos, byte[] data){
+        bb.put(pos, data);
+    }
+
+    public void getBytes(byte[] dst){
+        bb.get(dst);
+        bb.position(0);
+    }
+
+    public void getBytes(byte[] dst, int offsetDst, int length){
+        bb.get(dst, offsetDst, length);
+        bb.position(0);
+    }
+
+    public byte getByte(){
+        byte b = bb.get();
+        bb.position(0);
+        return b;
+    }
+
     //Getters & Setters
     public ByteBuffer getBb() {
         return bb;

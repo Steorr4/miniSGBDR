@@ -9,7 +9,7 @@ public class TypeParam extends Type {
     /**
      * Enumérations des types paramètrés possibles.
      */
-    public static enum ETypeParam{
+    public enum ETypeParam{
         CHAR,
         VARCHAR
     }

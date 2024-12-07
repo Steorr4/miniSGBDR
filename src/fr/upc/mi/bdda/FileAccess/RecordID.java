@@ -20,4 +20,20 @@ public class RecordID {
         this.pid = pid;
         this.slotIdx = slotIdx;
     }
+
+    public PageId getPid() {
+        return pid;
+    }
+
+    public void setPid(PageId pid) {
+        this.pid = pid;
+    }
+
+    public int getSlotIdx() {
+        return slotIdx;
+    }
+
+    public void setSlotIdx(int slotIdx) {
+        this.slotIdx = slotIdx;
+    }
 }

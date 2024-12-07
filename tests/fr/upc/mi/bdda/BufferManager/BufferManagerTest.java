@@ -3,7 +3,7 @@ package fr.upc.mi.bdda.BufferManager;
 import fr.upc.mi.bdda.DiskManager.DBConfig;
 import fr.upc.mi.bdda.DiskManager.DiskManager;
 import fr.upc.mi.bdda.DiskManager.PageId;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,19 +13,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BufferManagerTest {
 
-    DBConfig config;
-    DiskManager dm;
-    BufferManager bm;
-    PageId pid;
+    static DBConfig config;
+    static DiskManager dm;
+    static BufferManager bm;
+    static PageId pid;
 
-    @BeforeEach
-    void beforeEach() throws IOException {
+    @BeforeAll
+    static void beforeAll() throws IOException {
         config = new DBConfig("./DB", 256, 1024, 3, "MRU");
         dm = new DiskManager(config);
         bm = new BufferManager(config, dm);
         pid = dm.AllocPage();
 
-        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        CustomBuffer buff = new CustomBuffer(pid, config);
         buff.putInt(0, 123);
         dm.WritePage(pid, buff);
     }
@@ -59,7 +59,7 @@ class BufferManagerTest {
         PageId p2 = dm.AllocPage();
         PageId p3 = dm.AllocPage();
 
-        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        CustomBuffer buff = new CustomBuffer(pid, config);
         buff.putInt(0, 123);
 
         dm.WritePage(p1, buff);
@@ -72,6 +72,5 @@ class BufferManagerTest {
         assertThrows(BufferManager.BufferCountExcededException.class, ()->
                 bm.getPage(p3));
     }
-
     //TODO : getPage() -> testRemplacement, testEcriture
 }

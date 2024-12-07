@@ -1,6 +1,8 @@
 package fr.upc.mi.bdda.DiskManager;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import fr.upc.mi.bdda.BufferManager.CustomBuffer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +42,7 @@ class DiskManagerTest {
     void testReadPage() throws IOException {
         dm.AllocPage();
         PageId pid = dm.AllocPage();
-        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        CustomBuffer buff = new CustomBuffer(pid, config);
         String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
 
         RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
@@ -49,14 +51,14 @@ class DiskManagerTest {
         raf.close();
 
         dm.ReadPage(pid, buff);
-        assertEquals(5,buff.get());
+        assertEquals(5,buff.getByte());
     }
 
     @Test
     void testWritePage() throws IOException {
         dm.AllocPage();
         PageId pid = dm.AllocPage();
-        ByteBuffer buff = ByteBuffer.allocateDirect(config.getPagesize());
+        CustomBuffer buff = new CustomBuffer(pid, config);
         String filePath = config.getDbpath()+"/BinData/F"+pid.getFileIdx()+".rsdb";
 
         buff.putInt(127);

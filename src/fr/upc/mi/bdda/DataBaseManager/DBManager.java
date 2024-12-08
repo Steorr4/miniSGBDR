@@ -69,7 +69,6 @@ public class DBManager{
             File f = new File(config.getDbpath() + "/databases/nameDB.save");
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            System.out.println(databases);
             oos.writeObject(databases);
 
             for(Database db : databases.values()) {

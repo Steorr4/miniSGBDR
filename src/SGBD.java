@@ -182,14 +182,17 @@ public class SGBD {
     private void processInsertCommand(String[] cmd){
         switch(cmd[1]){
             case "INTO" -> {
-                Relation relation= dbm.getTableFromCurrentDatabase(cmd[2]);
+                Relation relation = dbm.getTableFromCurrentDatabase(cmd[2]);
 
                 switch(cmd[3]){
                     case "VALUES" -> {
-                        String[] values = cmd[4].split("[(,)\"]");
-                        List<String> l = new ArrayList<>();//DEBUG
-
+                        String[] values = cmd[4].substring(1, cmd[4].length() - 1).split(",\\s*");
+                        List<String> l = new ArrayList<>();
+                        for (String value : values) {
+                            l.add(value.replaceAll("^\"|\"$", "")); // Enlever les guillemets
+                         }
                         Record record = new Record(l);
+
                         try {
                             relation.insertRecord(record);
                         } catch (BufferManager.BufferCountExcededException e) {

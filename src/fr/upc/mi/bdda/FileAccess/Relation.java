@@ -170,9 +170,8 @@ public class Relation implements Serializable {
 
             buffer.putInt(indice*12+4, pid.getFileIdx());
             buffer.putInt(indice*12+8, pid.getPageIdx());
-            buffer.putInt(bm.getConfig().getPagesize());
-
-            buffer.putInt(indice+1);
+            buffer.putInt(indice*12+12,bm.getConfig().getPagesize());
+            buffer.putInt(0,indice+1);
 
             bm.freePage(headerPageID, true);
 
@@ -186,10 +185,16 @@ public class Relation implements Serializable {
 
         int indice = buffer.getInt(0);
 
+        if(indice == 0){
+            addDataPage();
+            indice = buffer.getInt(0);
+        }
+
         for(int i=0; i<indice; i++){
             PageId pid = new PageId(buffer.getInt(indice*12+4), buffer.getInt(indice*12+8));
 
-            if(buffer.getInt(indice*12+12)>=sizeRecord){
+            int freeSpace = buffer.getInt(i * 12 + 12);
+            if (freeSpace >= sizeRecord) {
                 buffer.setPos(0);
                 bm.freePage(headerPageID, false);
                 return pid;
@@ -305,6 +310,9 @@ public class Relation implements Serializable {
         if (pid == null){
             addDataPage();
             pid = getFreeDataPage(tailleRec);
+            if(pid == null){
+                throw new RuntimeException("Failed to allocate page");
+            }
         }
 
         return writeRecordToDataPage(rec, pid);

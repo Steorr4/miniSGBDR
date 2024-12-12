@@ -15,7 +15,7 @@ public class Record {
      *
      * @param val la valeur du tuple.
      */
-    public Record( List<String> val) {
+    public Record(List<String> val) {
         this.rid = null;
         this.val = val;
     }

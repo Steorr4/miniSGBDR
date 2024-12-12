@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * TODO
+ */
 public class SGBD {
     private DBConfig config;
     private DiskManager dm;
@@ -24,9 +27,12 @@ public class SGBD {
         dbm = new DBManager(config);
 
         dm.loadState();
-        dbm.loadState();
+        dbm.loadState(dm,bm);
     }
 
+    /**
+     * TODO
+     */
     private void run(){
 
         Scanner sc = new Scanner(System.in);
@@ -53,6 +59,11 @@ public class SGBD {
     }
 
 
+    /**
+     * TODO
+     *
+     * @param cmd
+     */
     private void processCreateCommand(String[] cmd){
         if(cmd.length < 2){
             System.out.println("Missing argument.");
@@ -158,6 +169,11 @@ public class SGBD {
         dbm.saveState();
     }
 
+    /**
+     * TODO
+     *
+     * @param args
+     */
     public static void main(String[]args){
         try {
 

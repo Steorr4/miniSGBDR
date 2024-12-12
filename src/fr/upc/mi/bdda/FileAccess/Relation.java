@@ -23,8 +23,8 @@ public class Relation implements Serializable {
     private List<ColInfo> colonnes; // Liste des colonnes de la table
     private PageId headerPageID; // Pointeur vers la HeaderPage
 
-    private transient final DiskManager dm;
-    private transient final BufferManager bm;
+    private transient DiskManager dm;
+    private transient BufferManager bm;
 
     /**
      * Main constructor.
@@ -337,5 +337,13 @@ public class Relation implements Serializable {
 
     public int getNbCol() {
         return nbCol;
+    }
+
+    public void setDm(DiskManager dm) {
+        this.dm = dm;
+    }
+
+    public void setBm(BufferManager bm) {
+        this.bm = bm;
     }
 }

@@ -1,6 +1,8 @@
 package fr.upc.mi.bdda.DataBaseManager;
 
+import fr.upc.mi.bdda.BufferManager.BufferManager;
 import fr.upc.mi.bdda.DiskManager.DBConfig;
+import fr.upc.mi.bdda.DiskManager.DiskManager;
 import fr.upc.mi.bdda.FileAccess.ColInfo;
 import fr.upc.mi.bdda.FileAccess.Relation;
 
@@ -87,7 +89,7 @@ public class DBManager{
 
     }
 
-    public void loadState(){
+    public void loadState(DiskManager dm, BufferManager bm){
         try{
             int i = 0;
 
@@ -104,6 +106,12 @@ public class DBManager{
                 ois = new ObjectInputStream(fis);
 
                 databases.put(s, (Database)ois.readObject());
+                HashMap<String, Relation> relations = databases.get(s).tables;
+                for (Relation r : relations.values()){
+                    r.setBm(bm);
+                    r.setDm(dm);
+                }
+
                 i++;
             }
 
@@ -145,7 +153,7 @@ public class DBManager{
 
         public void listTables(){
             for(Relation table : tables.values()){
-                System.out.print(table+"(");
+                System.out.print(table.getName()+"(");
                 for (ColInfo col : table.getColonnes()){
                     System.out.print(col.getNomCol()+":"+col.getTypeCol()+",");
                 }

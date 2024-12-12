@@ -26,7 +26,7 @@ public class SGBD {
         bm = new BufferManager(config, dm);
         dbm = new DBManager(config);
 
-        File dir = new File(config.getDbpath());
+        File dir = new File(config.getDbpath()+"/BinData");
         if(!dir.exists()){
             dir.mkdirs();
         }

@@ -49,7 +49,9 @@ public class DiskManager{
 
 		//S'il n'y a pas de page libre alors, on doit creer un nouveau fichier avec de nouvelles pages.
 		File f = new File(config.getDbpath()+"/BinData/F"+nbFichiers+".rsdb");
-		f.createNewFile();
+		if(!f.exists()) {
+			f.createNewFile();
+		}
 
 		int nbPages=config.getDm_maxfilesize()/config.getPagesize();
 		for(int i=1;i<nbPages;i++) pagesLibres.add(new PageId(nbFichiers,i));

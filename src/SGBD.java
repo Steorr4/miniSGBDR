@@ -1,15 +1,15 @@
 import fr.upc.mi.bdda.BufferManager.BufferManager;
+import fr.upc.mi.bdda.BufferManager.CustomBuffer;
 import fr.upc.mi.bdda.DataBaseManager.DBManager;
 import fr.upc.mi.bdda.DiskManager.DBConfig;
 import fr.upc.mi.bdda.DiskManager.DiskManager;
 import fr.upc.mi.bdda.DiskManager.PageId;
 import fr.upc.mi.bdda.FileAccess.*;
+import fr.upc.mi.bdda.FileAccess.Record;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * TODO
@@ -20,11 +20,16 @@ public class SGBD {
     private BufferManager bm;
     private DBManager dbm;
 
-    private SGBD(DBConfig config) {
+    private SGBD(DBConfig config) throws IOException {
         this.config = config;
         dm = new DiskManager(config);
         bm = new BufferManager(config, dm);
         dbm = new DBManager(config);
+
+        File dir = new File(config.getDbpath());
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
 
         dm.loadState();
         dbm.loadState(dm,bm);
@@ -49,6 +54,7 @@ public class SGBD {
                 case "SET" -> processSetCommand(cmd);
                 case "DROP" -> processDropCommand(cmd);
                 case "LIST" -> processListCommand(cmd);
+                case "INSERT" -> processInsertCommand(cmd);
                 case "QUIT" ->  {
                     processQuitCommand();
                     cond = false;
@@ -95,9 +101,13 @@ public class SGBD {
                     colonnes.add(new ColInfo(colName, colType));
                 }
                 try {
-                    PageId pidHeaderPage = dm.allocPage(); // TODO Ajouter l'ecriture de int 0 au debut ?
+                    PageId pidHeaderPage = dm.allocPage();
+                    CustomBuffer bufferHP = bm.getPage(pidHeaderPage);
+                    bufferHP.putInt(0);
+                    bm.freePage(pidHeaderPage,true);
                     dbm.addTableToCurrentDatabase(new Relation(cmd[2], colonnes, pidHeaderPage, dm, bm));
-                } catch (IOException e) {
+
+                } catch (IOException | BufferManager.BufferCountExcededException e) {
                     e.printStackTrace();
                 }
             }
@@ -169,6 +179,29 @@ public class SGBD {
         dbm.saveState();
     }
 
+    private void processInsertCommand(String[] cmd){
+        switch(cmd[1]){
+            case "INTO" -> {
+                Relation relation= dbm.getTableFromCurrentDatabase(cmd[2]);
+
+                switch(cmd[3]){
+                    case "VALUES" -> {
+                        String[] values = cmd[4].split("[(,)\"]");
+                        List<String> l = new ArrayList<>();//DEBUG
+
+                        Record record = new Record(l);
+                        try {
+                            relation.insertRecord(record);
+                        } catch (BufferManager.BufferCountExcededException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     /**
      * TODO
      *
@@ -184,4 +217,6 @@ public class SGBD {
             e.printStackTrace();
         }
     }
+
+
 }

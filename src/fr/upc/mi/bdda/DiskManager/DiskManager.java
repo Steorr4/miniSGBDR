@@ -143,7 +143,9 @@ public class DiskManager{
 		try {
 
 			File f = new File(config.getDbpath()+"/dm.save");
-			f.createNewFile();
+			if(!f.exists()) {
+				f.createNewFile();
+			}
 			FileInputStream fis = new FileInputStream(f);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			this.pagesLibres = (ArrayList<PageId>) ois.readObject();

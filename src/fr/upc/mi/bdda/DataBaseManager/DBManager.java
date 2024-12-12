@@ -93,8 +93,16 @@ public class DBManager{
         try{
             int i = 0;
 
-            File f = new File(config.getDbpath() + "/databases/nameDB.save");
-            f.createNewFile();
+            File f = new File(config.getDbpath() + "/databases");
+            if(!f.exists()) {
+                f.mkdirs();
+            }
+
+            f = new File(config.getDbpath() + "/databases/nameDB.save");
+            if(!f.exists()) {
+                f.createNewFile();
+            }
+
             FileInputStream fis = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fis);
 

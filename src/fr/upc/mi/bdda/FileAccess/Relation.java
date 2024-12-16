@@ -186,7 +186,13 @@ public class Relation implements Serializable {
         }
     }
 
-    //TODO FIX
+    /**
+     * TODO
+     *
+     * @param sizeRecord
+     * @return
+     * @throws BufferManager.BufferCountExcededException
+     */
     private PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
         CustomBuffer buffer = bm.getPage(headerPageID);
 
@@ -213,7 +219,7 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO CENSER MARCHER
+     * TODO
      *
      * @param record
      * @param pid

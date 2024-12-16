@@ -1,7 +1,7 @@
 {
   "dbpath" : "./DB",
-  "pagesize" : 1024,
-  "dm_maxfilesize" : 4096,
-  "bm_buffercount" : 3,
+  "pagesize" : 512,
+  "dm_maxfilesize" : 1024,
+  "bm_buffercount" : 2,
   "bm_policy" :"MRU"
 }

@@ -1,3 +1,5 @@
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import fr.upc.mi.bdda.BufferManager.BufferManager;
 import fr.upc.mi.bdda.BufferManager.CustomBuffer;
 import fr.upc.mi.bdda.DataBaseManager.DBManager;
@@ -8,6 +10,8 @@ import fr.upc.mi.bdda.FileAccess.*;
 import fr.upc.mi.bdda.FileAccess.Record;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -55,6 +59,7 @@ public class SGBD {
                 case "DROP" -> processDropCommand(cmd);
                 case "LIST" -> processListCommand(cmd);
                 case "INSERT" -> processInsertCommand(cmd);
+                case "BULKINSERT" -> processBulkinsertCommand(cmd);
                 case "QUIT" ->  {
                     processQuitCommand();
                     cond = false;
@@ -199,6 +204,32 @@ public class SGBD {
                             throw new RuntimeException(e);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void processBulkinsertCommand(String[] cmd){
+        switch(cmd[1]){
+            case "INTO" -> {
+                Relation relation = dbm.getTableFromCurrentDatabase(cmd[2]);
+
+                try {
+
+                    File f = new File(cmd[3]);
+                    if(!f.exists()) throw new FileNotFoundException("CSV Incorrect.");
+                    FileReader filereader = new FileReader(f);
+
+                    CSVReader csvReader = new CSVReader(filereader);
+                    String[] nextRecord;
+
+                    while ((nextRecord = csvReader.readNext()) != null) {
+                        Record record=new Record(Arrays.asList(nextRecord));
+                        relation.insertRecord(record);
+                    }
+
+                } catch (BufferManager.BufferCountExcededException | IOException | CsvValidationException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

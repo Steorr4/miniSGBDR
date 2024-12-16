@@ -100,6 +100,7 @@ public class Relation implements Serializable {
                 }
             }
         }
+        buff.putInt(pos+4*nbCol, ptPos);
         return total;
     }
 
@@ -164,22 +165,28 @@ public class Relation implements Serializable {
         //TODO : besoin de creer une nouvelle header page si implementation du chainage
         try {
 
-            PageId pid = dm.allocPage();
+            PageId pid = dm.allocPage(); //Alloc new page pid
             CustomBuffer buffer = bm.getPage(headerPageID);
             int indice = buffer.getInt(0);
 
             buffer.putInt(indice*12+4, pid.getFileIdx());
             buffer.putInt(indice*12+8, pid.getPageIdx());
-            buffer.putInt(indice*12+12,bm.getConfig().getPagesize());
+            buffer.putInt(indice*12+12, bm.getConfig().getPagesize()-8);
             buffer.putInt(0,indice+1);
 
             bm.freePage(headerPageID, true);
+
+            buffer = bm.getPage(pid);
+            buffer.putInt(bm.getConfig().getPagesize()-4,0);
+            buffer.putInt(bm.getConfig().getPagesize()-8,0);
+            bm.freePage(pid,true);
 
         } catch (IOException | BufferManager.BufferCountExcededException e) {
             throw new RuntimeException(e);
         }
     }
 
+    //TODO FIX
     private PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
         CustomBuffer buffer = bm.getPage(headerPageID);
 
@@ -191,10 +198,10 @@ public class Relation implements Serializable {
         }
 
         for(int i=0; i<indice; i++){
-            PageId pid = new PageId(buffer.getInt(indice*12+4), buffer.getInt(indice*12+8));
-
-            int freeSpace = buffer.getInt(i * 12 + 12);
-            if (freeSpace >= sizeRecord) {
+            int freeSpace = buffer.getInt((i+1) * 12); // recup nb octets libres.
+            if (freeSpace >= sizeRecord+8) {
+                buffer.putInt((i+1) * 12,freeSpace-sizeRecord);
+                PageId pid = new PageId(buffer.getInt(i*12+4), buffer.getInt(i*12+8));
                 buffer.setPos(0);
                 bm.freePage(headerPageID, false);
                 return pid;
@@ -206,7 +213,7 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * TODO CENSER MARCHER
      *
      * @param record
      * @param pid
@@ -217,23 +224,24 @@ public class Relation implements Serializable {
 
         CustomBuffer buffer = bm.getPage(pid);
 
-        int debRec = buffer.getInt(bm.getConfig().getPagesize()-4);
+        int debRec = buffer.getInt(bm.getConfig().getPagesize()-4); //nb deb espace libre
 
-        int taille = writeRecordToBuffer(record, buffer, debRec);
-        buffer.putInt(bm.getConfig().getPagesize()-4, debRec+taille);
-        int nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
+        int taille = writeRecordToBuffer(record, buffer, debRec); //taille apres du record
+        buffer.putInt(bm.getConfig().getPagesize()-4, debRec+taille); //MaJ pos debEspaceLibre
+        int nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8); //nb entrée de slot
 
-        buffer.putInt(bm.getConfig().getPagesize()-(nbSlot+1)*8, debRec);
-        buffer.putInt(taille);
+        buffer.putInt(bm.getConfig().getPagesize()-(nbSlot+2)*8, debRec); //ajout deb record
+        buffer.putInt(bm.getConfig().getPagesize()-(nbSlot+2)*8+4,taille); //ajout taille rec
 
-        buffer.putInt(bm.getConfig().getPagesize()-8,++nbSlot);
+        nbSlot++;
+        buffer.putInt(bm.getConfig().getPagesize()-8,nbSlot);
 
         record.setRid(new RecordID(pid,nbSlot));
 
         buffer.setPos(0);
         bm.freePage(pid,true);
-        return record.getRid();
 
+        return record.getRid();
     }
 
     /**

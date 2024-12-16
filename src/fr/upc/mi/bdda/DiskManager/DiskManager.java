@@ -73,13 +73,16 @@ public class DiskManager{
 		try {
 
 			RandomAccessFile raf = new RandomAccessFile(pathFichier, "r");
-			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
+			long fileLength = raf.length();
+        	long position = (long) pageId.getPageIdx() * config.getPagesize();
 
-			buff.setPos(0);
-			byte[] data = new byte[config.getPagesize()];
-			for(int i = 0; i < data.length; i++) data[i] = raf.readByte();
+        	if (!(position + config.getPagesize() > fileLength)) {
+				buff.setPos(0);
+				byte[] data = new byte[config.getPagesize()];
+				for (int i = 0; i < data.length; i++) data[i] = raf.readByte();
 
-			buff.putBytes(data);
+				buff.putBytes(data);
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -147,11 +150,11 @@ public class DiskManager{
 			File f = new File(config.getDbpath()+"/dm.save");
 			if(!f.exists()) {
 				f.createNewFile();
+			}else {
+				FileInputStream fis = new FileInputStream(f);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				this.pagesLibres = (ArrayList<PageId>) ois.readObject();
 			}
-			FileInputStream fis = new FileInputStream(f);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			this.pagesLibres = (ArrayList<PageId>) ois.readObject();
-
 		}catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}

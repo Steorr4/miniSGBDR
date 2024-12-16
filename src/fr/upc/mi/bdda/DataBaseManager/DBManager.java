@@ -101,28 +101,27 @@ public class DBManager{
             f = new File(config.getDbpath() + "/databases/nameDB.save");
             if(!f.exists()) {
                 f.createNewFile();
-            }
+            }else {
 
-            FileInputStream fis = new FileInputStream(f);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
 
-            HashMap<String, Database> dbnames = (HashMap<String, Database>) ois.readObject();
+                HashMap<String, Database> dbnames = (HashMap<String, Database>) ois.readObject();
+                for (String s : dbnames.keySet()) {
+                    f = new File(config.getDbpath() + "/databases/DB" + i + ".save");
+                    fis = new FileInputStream(f);
+                    ois = new ObjectInputStream(fis);
 
-            for(String s: dbnames.keySet()){
-                f = new File(config.getDbpath() + "/databases/DB"+i+".save");
-                fis = new FileInputStream(f);
-                ois = new ObjectInputStream(fis);
+                    databases.put(s, (Database) ois.readObject());
+                    HashMap<String, Relation> relations = databases.get(s).tables;
+                    for (Relation r : relations.values()) {
+                        r.setBm(bm);
+                        r.setDm(dm);
+                    }
 
-                databases.put(s, (Database)ois.readObject());
-                HashMap<String, Relation> relations = databases.get(s).tables;
-                for (Relation r : relations.values()){
-                    r.setBm(bm);
-                    r.setDm(dm);
+                    i++;
                 }
-
-                i++;
             }
-
         }catch (IOException e){
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -160,12 +159,15 @@ public class DBManager{
         }
 
         public void listTables(){
+            StringBuilder sb = new StringBuilder();
             for(Relation table : tables.values()){
-                System.out.print(table.getName()+"(");
+                sb.append(table.getName()).append(" (");
                 for (ColInfo col : table.getColonnes()){
-                    System.out.print(col.getNomCol()+":"+col.getTypeCol()+",");
+                    sb.append(col.getNomCol()).append(":").append(col.getTypeCol()).append(",");
                 }
-                System.out.println(")");
+                sb.deleteCharAt(sb.length()-1);
+                sb.append(")");
+                System.out.println(sb);
             }
         }
     }

@@ -52,6 +52,8 @@ public class BufferManager {
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
                 cb.setPin_count(cb.getPin_count()+1);
+                System.out.println("Retrieved page: " + pid.getFileIdx()+
+                        " "+pid.getPageIdx()); //DEBUG
                 return cb;
             }
         }
@@ -64,6 +66,8 @@ public class BufferManager {
             CustomBuffer cb = new CustomBuffer(pid, config);
             dm.readPage(pid,cb);
             bufferList.add(cb);
+            System.out.println("Retrieved page: " + pid.getFileIdx()+
+                        " "+pid.getPageIdx()); //DEBUG
             return cb;
         }
 
@@ -75,6 +79,8 @@ public class BufferManager {
         CustomBuffer cb = new CustomBuffer(pid, config);
         bufferList.remove(oldBuffer);
         bufferList.add(cb);
+        System.out.println("Retrieved page: " + pid.getFileIdx()+
+                        " "+pid.getPageIdx()); //DEBUG
         return cb;
     }
 

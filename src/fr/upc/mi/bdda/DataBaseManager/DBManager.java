@@ -80,11 +80,19 @@ public class DBManager{
                 oos = new ObjectOutputStream(fos);
 
                 oos.writeObject(db);
+                //DEBUG********************************88
+                System.out.println("Database " + db.name + " saved with " + db.tables.size() + " tables.");
+                for (Relation r : db.tables.values()) {
+                    System.out.println("Table " + r.getName() + " saved with " + r.getAllRecords().size() + " records.");
+                }
+                //****************************************
                 i++;
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (BufferManager.BufferCountExcededException e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -117,6 +125,7 @@ public class DBManager{
                     for (Relation r : relations.values()) {
                         r.setBm(bm);
                         r.setDm(dm);
+                        System.out.println("Table " + r.getName() + " loaded with " + r.getAllRecords().size() + " records."); //DEBUG
                     }
 
                     i++;
@@ -125,6 +134,8 @@ public class DBManager{
         }catch (IOException e){
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (BufferManager.BufferCountExcededException e) {
             throw new RuntimeException(e);
         }
     }
@@ -159,8 +170,9 @@ public class DBManager{
         }
 
         public void listTables(){
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb;
             for(Relation table : tables.values()){
+                sb = new StringBuilder();
                 sb.append(table.getName()).append(" (");
                 for (ColInfo col : table.getColonnes()){
                     sb.append(col.getNomCol()).append(":").append(col.getTypeCol()).append(",");

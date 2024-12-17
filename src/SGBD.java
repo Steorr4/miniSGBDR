@@ -2,7 +2,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import fr.upc.mi.bdda.BufferManager.BufferManager;
 import fr.upc.mi.bdda.BufferManager.CustomBuffer;
-import fr.upc.mi.bdda.DataBaseManager.DBManager;
+import fr.upc.mi.bdda.DataBaseManager.*;
 import fr.upc.mi.bdda.DiskManager.DBConfig;
 import fr.upc.mi.bdda.DiskManager.DiskManager;
 import fr.upc.mi.bdda.DiskManager.PageId;
@@ -50,7 +50,7 @@ public class SGBD {
         String[] cmd;
 
         do{
-            System.out.println("?");
+            System.out.print("> ");
             input = sc.nextLine();
             cmd = input.split(" ");
             switch (cmd[0]){
@@ -60,7 +60,8 @@ public class SGBD {
                 case "LIST" -> processListCommand(cmd);
                 case "INSERT" -> processInsertCommand(cmd);
                 case "BULKINSERT" -> processBulkinsertCommand(cmd);
-                case "QUIT" ->  {
+                case "SELECT" -> processSelectCommand(cmd);
+                case "QUIT" -> {
                     processQuitCommand();
                     cond = false;
                 }
@@ -133,7 +134,7 @@ public class SGBD {
 
         switch (cmd[1]){
             case "DATABASE" -> dbm.setCurrentDatabase(cmd[2]);
-            default -> System.out.println("Incorrect(s) argument(s).");
+            default -> System.out.println("Illegal(s) argument(s).");
         }
     }
 
@@ -153,7 +154,7 @@ public class SGBD {
             case "TABLES" -> dbm.removeTablesFromCurrentDatabase();
             case "DATABASE" -> dbm.removeDatabase(cmd[2]);
             case "DATABASES" -> dbm.removeDatabases();
-            default -> System.out.println("Incorrect(s) argument(s).");
+            default -> System.out.println("Illegal(s) argument(s).");
         }
     }
 
@@ -171,7 +172,7 @@ public class SGBD {
         switch (cmd[1]){
             case "DATABASES" -> dbm.listDatabases();
             case "TABLES" -> dbm.listTablesInCurrentDatabase();
-            default -> System.out.println("Incorrect(s) argument(s).");
+            default -> System.out.println("Illegal(s) argument(s).");
         }
     }
 
@@ -185,6 +186,12 @@ public class SGBD {
     }
 
     private void processInsertCommand(String[] cmd){
+
+        if(cmd.length < 5){
+            System.out.println("Missing argument.");
+            return;
+        }
+
         switch(cmd[1]){
             case "INTO" -> {
                 Relation relation = dbm.getTableFromCurrentDatabase(cmd[2]);
@@ -217,7 +224,7 @@ public class SGBD {
                 try {
 
                     File f = new File(cmd[3]);
-                    if(!f.exists()) throw new FileNotFoundException("CSV Incorrect.");
+                    if(!f.exists()) throw new FileNotFoundException("CSV not found.");
                     FileReader filereader = new FileReader(f);
 
                     CSVReader csvReader = new CSVReader(filereader);
@@ -235,6 +242,53 @@ public class SGBD {
         }
     }
 
+    private void processSelectCommand(String[] cmd){
+        if (cmd[1].equals("*")) {
+            Relation r = dbm.getTableFromCurrentDatabase(cmd[3]);
+            String alias = cmd[4];
+
+            if(cmd.length == 5){
+                RecordPrinter iterator = new RecordPrinter(new RelationScanner(r));
+                iterator.print();
+
+            }else {
+                List<Condition> conds = new ArrayList<>();
+                int nbcond = (cmd.length-6)/2;
+                String ope;
+                String strCond;
+                String[] valCond;
+
+                for(int i = 0; i<nbcond; i++){
+                    strCond = cmd[7+2*i];
+                    valCond = strCond.split("(<=|>=|<|>|<>|=)");
+                    ope = strCond.substring(valCond[0].length(),strCond.length()-valCond[1].length());
+
+                    if(valCond[0].startsWith(alias)){
+
+                        if(valCond[1].startsWith(alias)) {
+                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
+                                    ope, r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
+
+                        }else{
+                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
+                                    ope, valCond[1]));
+                        }
+                    }else{
+                        conds.add(new Condition(valCond[0],ope,
+                                r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
+                    }
+                }
+
+                RecordPrinter iterator = new RecordPrinter(new SelectOperator(r, conds));
+                iterator.print();
+
+            }
+
+
+        }else {
+            //TODO
+        }
+    }
 
     /**
      * TODO
@@ -251,6 +305,5 @@ public class SGBD {
             e.printStackTrace();
         }
     }
-
 
 }

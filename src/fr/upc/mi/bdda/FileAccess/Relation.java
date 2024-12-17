@@ -94,12 +94,13 @@ public class Relation implements Serializable {
                         break;
 
                     case VARCHAR:
-                        buff.putBytes(ptPos, rec.getVal().get(i).getBytes());
+                        buff.putBytes(ptPos, rec.getVal().get(i).getBytes(StandardCharsets.UTF_8));
                         ptPos += rec.getVal().get(i).length();
                         total += rec.getVal().get(i).length();
                 }
             }
         }
+        BufferUtils.printBuffer(buff); //DEBUG
         buff.putInt(pos+4*nbCol, ptPos);
         return total;
     }
@@ -128,7 +129,7 @@ public class Relation implements Serializable {
                         ptPos = buff.getInt(pos);
                         pos+=4;
 
-                        listVal.set(i,Integer.toString(buff.getInt(ptPos)));
+                        listVal.add(i,Integer.toString(buff.getInt(ptPos)));
                         total+=4;
                         break;
 
@@ -136,7 +137,7 @@ public class Relation implements Serializable {
                         ptPos = buff.getInt(pos);
                         pos+=4;
 
-                        listVal.set(i,Float.toString(buff.getFloat(ptPos)));
+                        listVal.add(i,Float.toString(buff.getFloat(ptPos)));
                         total+=4;
                         break;
                 }
@@ -149,11 +150,12 @@ public class Relation implements Serializable {
                 buff.setPos(ptPos);
                 buff.getBytes(b,0,length);
 
-                listVal.set(i,new String(b, StandardCharsets.UTF_8));
+                listVal.add(i,new String(b, StandardCharsets.UTF_8));
                 total+=length;
             }
 
         }
+        BufferUtils.printBuffer(buff); //DEBUG
         return total;
     }
 
@@ -181,6 +183,7 @@ public class Relation implements Serializable {
             buffer.putInt(bm.getConfig().getPagesize()-8,0);
             bm.freePage(pid,true);
 
+            System.out.println("Data page added: " + pid.getFileIdx() + " " +pid.getPageIdx()); //DEBUG
         } catch (IOException | BufferManager.BufferCountExcededException e) {
             throw new RuntimeException(e);
         }
@@ -210,6 +213,7 @@ public class Relation implements Serializable {
                 PageId pid = new PageId(buffer.getInt(i*12+4), buffer.getInt(i*12+8));
                 buffer.setPos(0);
                 bm.freePage(headerPageID, false);
+                System.out.println("Free data page found: " + pid.getFileIdx() + " " +pid.getPageIdx()); //DEBUG
                 return pid;
             }
         }
@@ -247,6 +251,10 @@ public class Relation implements Serializable {
         buffer.setPos(0);
         bm.freePage(pid,true);
 
+        System.out.println("Record written to data page: " + pid +
+                ", RecordID: " + record.getRid().getPid().getFileIdx() +
+                " " + record.getRid().getPid().getPageIdx() + " " +
+                record.getRid().getSlotIdx()); //DEBUG
         return record.getRid();
     }
 
@@ -275,6 +283,8 @@ public class Relation implements Serializable {
 
         buffer.setPos(0);
         bm.freePage(pid,false);
+        System.out.println("Records read from data page: " + pid +
+                ", Number of records: " + recordList.size()); //DEBUG
         return recordList;
     }
 
@@ -367,5 +377,14 @@ public class Relation implements Serializable {
 
     public void setBm(BufferManager bm) {
         this.bm = bm;
+    }
+
+    public int getColIndex(String nomCol){
+        int cpt = 0;
+        for (ColInfo col : colonnes){
+            if(col.getNomCol().equals(nomCol)) return cpt;
+            cpt++;
+        }
+        throw new RuntimeException("Colonne non existante.");
     }
 }

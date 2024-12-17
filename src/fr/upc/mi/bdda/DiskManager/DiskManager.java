@@ -44,6 +44,8 @@ public class DiskManager{
 		if(!pagesLibres.isEmpty()) {
 			PageId pid=pagesLibres.getFirst();
 			pagesLibres.removeFirst();
+			System.out.println("Allocated new page: " + pid.getFileIdx()+
+					" "+pid.getPageIdx()); //DEBUG
 			return pid;
 		}
 
@@ -58,6 +60,8 @@ public class DiskManager{
 
 		PageId pid=new PageId(nbFichiers,0);
 		nbFichiers++;
+		System.out.println("Allocated new page: " + pid.getFileIdx()+
+					" "+pid.getPageIdx()); //DEBUG
 		return pid;
 	}
 
@@ -101,10 +105,9 @@ public class DiskManager{
 
 		try {
 
-			RandomAccessFile raf = new RandomAccessFile(new File(pathFichier),"rw");
+			RandomAccessFile raf = new RandomAccessFile(pathFichier,"rw");
 			raf.seek((long) pageId.getPageIdx() * config.getPagesize());
 
-			buff.setPos(0);
 			byte[] data = new byte[buff.remaining()];
 			buff.getBytes(data);
 			raf.write(data);

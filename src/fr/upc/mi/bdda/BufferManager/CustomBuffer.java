@@ -31,6 +31,7 @@ public class CustomBuffer {
     }
 
     public int remaining(){
+        bb.position(0);
         return bb.remaining();
     }
     public void setPos(int i){

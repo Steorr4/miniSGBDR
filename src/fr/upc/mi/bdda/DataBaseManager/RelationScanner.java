@@ -1,35 +1,30 @@
 package fr.upc.mi.bdda.DataBaseManager;
 
-import fr.upc.mi.bdda.FileAccess.Record;
+import fr.upc.mi.bdda.BufferManager.BufferManager;
 import fr.upc.mi.bdda.FileAccess.Relation;
+import fr.upc.mi.bdda.FileAccess.Record;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectOperator implements IRecordIterator{
+public class RelationScanner implements IRecordIterator{
 
-    boolean isClosed;
+    private boolean isClosed;
     private int cursor;
-    List<Record> records;
-    int[] cols;
-    private IRecordIterator opFils; // Selection
 
-    public ProjectOperator(SelectOperator select, int[]cols) {
+    private Relation relation;
+    private List<Record> records;
+
+    public RelationScanner(Relation relation){
         isClosed = false;
-        cursor = 0;
-        records = new ArrayList<>();
-        opFils = select;
-
-        Record next;
-        List<String> val;
-        while ((next=opFils.getNextRecord()) != null){
-            val = new ArrayList<>();
-            for(int i : cols){
-                val.add(next.getVal().get(i));
-            }
-            records.add(new Record(val));
+        cursor=0;
+        this.relation = relation;
+        try {
+            records = relation.getAllRecords();
+        } catch (BufferManager.BufferCountExcededException e) {
+            throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public Record getNextRecord() {
@@ -53,4 +48,6 @@ public class ProjectOperator implements IRecordIterator{
         if (isClosed) throw new RuntimeException("Iterator closed.");
         cursor = 0;
     }
+
+
 }

@@ -52,8 +52,6 @@ public class BufferManager {
         for (CustomBuffer cb : bufferList){
             if (pid.equals(cb.getPid())){
                 cb.setPin_count(cb.getPin_count()+1);
-                System.out.println("Retrieved page: " + pid.getFileIdx()+
-                        " "+pid.getPageIdx()); //DEBUG
                 return cb;
             }
         }
@@ -66,21 +64,18 @@ public class BufferManager {
             CustomBuffer cb = new CustomBuffer(pid, config);
             dm.readPage(pid,cb);
             bufferList.add(cb);
-            System.out.println("Retrieved page: " + pid.getFileIdx()+
-                        " "+pid.getPageIdx()); //DEBUG
             return cb;
         }
 
-        // Récupère une page innutilisé dans un cadre en fonction de la politique de remplacement
+        // Récupère une page inutilisée dans un cadre en fonction de la politique de remplacement
         CustomBuffer oldBuffer = remplacement();
 
         // Ecriture sur disque si la page a été modif, remplacement de l'ancienne page par la nouvelle
         if(oldBuffer.isDirty_flag()) dm.writePage(oldBuffer.getPid(), oldBuffer);
         CustomBuffer cb = new CustomBuffer(pid, config);
+        dm.readPage(pid, cb); //TODO Jvais tellement me suicider
         bufferList.remove(oldBuffer);
         bufferList.add(cb);
-        System.out.println("Retrieved page: " + pid.getFileIdx()+
-                        " "+pid.getPageIdx()); //DEBUG
         return cb;
     }
 

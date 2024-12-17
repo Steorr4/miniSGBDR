@@ -64,13 +64,14 @@ public class DBManager{
         current.listTables();
     }
 
-    public void saveState(){
+    public void saveState(DiskManager dm){
         try {
             int i = 0;
 
             File f = new File(config.getDbpath() + "/databases/nameDB.save");
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(dm.getNbFichiers());
             oos.writeObject(databases);
 
             for(Database db : databases.values()) {
@@ -80,19 +81,12 @@ public class DBManager{
                 oos = new ObjectOutputStream(fos);
 
                 oos.writeObject(db);
-                //DEBUG********************************88
-                System.out.println("Database " + db.name + " saved with " + db.tables.size() + " tables.");
-                for (Relation r : db.tables.values()) {
-                    System.out.println("Table " + r.getName() + " saved with " + r.getAllRecords().size() + " records.");
-                }
-                //****************************************
                 i++;
             }
 
+
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (BufferManager.BufferCountExcededException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -114,6 +108,7 @@ public class DBManager{
                 FileInputStream fis = new FileInputStream(f);
                 ObjectInputStream ois = new ObjectInputStream(fis);
 
+                dm.setNbFichiers((int)ois.readObject());
                 HashMap<String, Database> dbnames = (HashMap<String, Database>) ois.readObject();
                 for (String s : dbnames.keySet()) {
                     f = new File(config.getDbpath() + "/databases/DB" + i + ".save");
@@ -125,7 +120,6 @@ public class DBManager{
                     for (Relation r : relations.values()) {
                         r.setBm(bm);
                         r.setDm(dm);
-                        System.out.println("Table " + r.getName() + " loaded with " + r.getAllRecords().size() + " records."); //DEBUG
                     }
 
                     i++;
@@ -134,8 +128,6 @@ public class DBManager{
         }catch (IOException e){
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (BufferManager.BufferCountExcededException e) {
             throw new RuntimeException(e);
         }
     }

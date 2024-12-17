@@ -182,7 +182,7 @@ public class SGBD {
     private void processQuitCommand(){
         bm.flushBuffers();
         dm.saveState();
-        dbm.saveState();
+        dbm.saveState(dm);
     }
 
     private void processInsertCommand(String[] cmd){
@@ -201,7 +201,8 @@ public class SGBD {
                         String[] values = cmd[4].substring(1, cmd[4].length() - 1).split(",\\s*");
                         List<String> l = new ArrayList<>();
                         for (String value : values) {
-                            l.add(value.replaceAll("^\"|\"$", "")); // Enlever les guillemets
+                            l.add(value.replaceAll("^\"|\"$", ""));
+                            // Enlever les guillemets
                          }
                         Record record = new Record(l);
 

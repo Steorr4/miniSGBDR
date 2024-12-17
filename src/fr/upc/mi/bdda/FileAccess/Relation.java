@@ -100,7 +100,6 @@ public class Relation implements Serializable {
                 }
             }
         }
-        BufferUtils.printBuffer(buff); //DEBUG
         buff.putInt(pos+4*nbCol, ptPos);
         return total;
     }
@@ -155,7 +154,6 @@ public class Relation implements Serializable {
             }
 
         }
-        BufferUtils.printBuffer(buff); //DEBUG
         return total;
     }
 
@@ -183,7 +181,6 @@ public class Relation implements Serializable {
             buffer.putInt(bm.getConfig().getPagesize()-8,0);
             bm.freePage(pid,true);
 
-            System.out.println("Data page added: " + pid.getFileIdx() + " " +pid.getPageIdx()); //DEBUG
         } catch (IOException | BufferManager.BufferCountExcededException e) {
             throw new RuntimeException(e);
         }
@@ -207,13 +204,13 @@ public class Relation implements Serializable {
         }
 
         for(int i=0; i<indice; i++){
-            int freeSpace = buffer.getInt((i+1) * 12); // recup nb octets libres.
+            int freeSpace = bm.getConfig().getPagesize() - buffer.getInt(bm.getConfig().getPagesize()-4) -
+                    (buffer.getInt(bm.getConfig().getPagesize()-8)+1)*8; // recup nb octets libres.
             if (freeSpace >= sizeRecord+8) {
                 buffer.putInt((i+1) * 12,freeSpace-sizeRecord);
                 PageId pid = new PageId(buffer.getInt(i*12+4), buffer.getInt(i*12+8));
                 buffer.setPos(0);
                 bm.freePage(headerPageID, false);
-                System.out.println("Free data page found: " + pid.getFileIdx() + " " +pid.getPageIdx()); //DEBUG
                 return pid;
             }
         }
@@ -250,11 +247,6 @@ public class Relation implements Serializable {
 
         buffer.setPos(0);
         bm.freePage(pid,true);
-
-        System.out.println("Record written to data page: " + pid +
-                ", RecordID: " + record.getRid().getPid().getFileIdx() +
-                " " + record.getRid().getPid().getPageIdx() + " " +
-                record.getRid().getSlotIdx()); //DEBUG
         return record.getRid();
     }
 
@@ -283,8 +275,6 @@ public class Relation implements Serializable {
 
         buffer.setPos(0);
         bm.freePage(pid,false);
-        System.out.println("Records read from data page: " + pid +
-                ", Number of records: " + recordList.size()); //DEBUG
         return recordList;
     }
 
@@ -297,6 +287,7 @@ public class Relation implements Serializable {
     private List<PageId> getDataPages() throws BufferManager.BufferCountExcededException {
 
         CustomBuffer buffer = bm.getPage(headerPageID);
+        //TODO bizarre
         int nbPage =  buffer.getInt(0);
         List<PageId> pids = new ArrayList<>(nbPage);
 

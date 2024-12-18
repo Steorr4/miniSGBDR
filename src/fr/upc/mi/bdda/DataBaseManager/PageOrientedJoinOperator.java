@@ -20,7 +20,6 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     private int cursorR2;
 
     private List<Condition> conds;
-    private List<Record> records;
     private BufferManager bm;
     private DataPageHoldRecordIterator dhrpi1;
     private DataPageHoldRecordIterator dhrpi2;

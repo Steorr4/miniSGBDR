@@ -15,19 +15,43 @@ public class Condition {
     public Condition(int indiceCol1, String op, String val) {
         this.val = val;
         this.indiceCol1 = indiceCol1;
-        switch (op){
-            case "<" -> this.op=">";
-            case "<=" -> this.op=">=";
-            case ">" -> this.op="<";
-            case ">=" -> this.op="<=";
-            default -> this.op = op;
-        }
+        this.op = invertOpe(op);
     }
 
     public Condition(int indiceCol1, String op, int indiceCol2) {
         this.indiceCol1 = indiceCol1;
         this.op = op;
         this.indiceCol2 = indiceCol2;
+    }
+
+    public Condition(int indiceCol1, String op, int indiceCol2, boolean invert){
+        this.indiceCol1 = indiceCol1;
+        if(invert){
+            this.op = invertOpe(op);
+        }else {
+            this.op = op;
+        }
+        this.indiceCol2 = indiceCol2;
+    }
+
+    private String invertOpe(String op){
+        switch (op){
+            case "<" -> {
+                return ">";
+            }
+            case "<=" -> {
+                return ">=";
+            }
+            case ">" -> {
+                return "<";
+            }
+            case ">=" -> {
+                return "<=";
+            }
+            default -> {
+                return op;
+            }
+        }
     }
 
     public String getOp() {

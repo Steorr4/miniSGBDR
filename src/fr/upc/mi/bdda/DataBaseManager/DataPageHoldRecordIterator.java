@@ -21,8 +21,8 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
         this.bm = bm;
         isClosed = false;
 
-        nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
         buffer = bm.getPage(pid);
+        nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
         cursor = 0;
     }
 

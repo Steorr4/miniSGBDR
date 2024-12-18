@@ -332,10 +332,55 @@ public class SGBD {
                 indexCol.put(alias, cols);
 
             }
-
             //TODO
+            List<Condition> conds = new ArrayList<>();
+            int nbcond = (cmd.length - cpt) / 2;
+            String ope;
+            String strCond;
+            String[] valCond;
+            List<String> alias = new ArrayList<>(relations.keySet());
+
+            for(int i = 1; i<=nbcond; i++){
+                strCond = cmd[cpt + 2 * i];
+                valCond = strCond.split("(<=|>=|<|>|<>|=)");
+                ope = strCond.substring(valCond[0].length(), strCond.length() - valCond[1].length());
+
+                String alias1 = valCond[0].split("\\.")[0];
+                String alias2 = valCond[1].split("\\.")[0];
+
+                if(alias1.equals(alias.getFirst())){
+                    conds.add(new Condition(
+                            relations.get(alias1).getColIndex(valCond[0].replaceAll(alias1 + "\\.", "")),
+                            ope,
+                            relations.get(alias2).getColIndex(valCond[1].replaceAll(alias2 + "\\.", ""))
+                    ));
+                }else {
+                    conds.add(new Condition(
+                            relations.get(alias1).getColIndex(valCond[0].replaceAll(alias1 + "\\.", "")),
+                            ope,
+                            relations.get(alias2).getColIndex(valCond[1].replaceAll(alias2 + "\\.", "")),
+                            true
+                    ));
+                }
+
+            }
+
+            try {
+        IRecordIterator iterator = new PageOrientedJoinOperator(
+                relations.get(alias.get(0)),
+                relations.get(alias.get(1)),
+                conds,
+                bm
+        );
+        RecordPrinter printer = new RecordPrinter(iterator);
+        printer.print();
+    } catch (BufferManager.BufferCountExcededException e) {
+        throw new RuntimeException(e);
+    }
 
         }
+
+
 
     }
 

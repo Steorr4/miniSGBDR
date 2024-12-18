@@ -35,6 +35,6 @@ public class TypeNonParam extends Type{
     @Override
     public String toString() {
         if(type == ETypeNonParam.INT) return "INT";
-        return "FLOAT";
+        return "REAL";
     }
 }

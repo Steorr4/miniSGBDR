@@ -244,51 +244,67 @@ public class SGBD {
     }
 
     private void processSelectCommand(String[] cmd){
-        if (cmd[1].equals("*")) {
-            Relation r = dbm.getTableFromCurrentDatabase(cmd[3]);
-            String alias = cmd[4];
 
-            if(cmd.length == 5){
-                RecordPrinter iterator = new RecordPrinter(new RelationScanner(r));
-                iterator.print();
+        Relation r = dbm.getTableFromCurrentDatabase(cmd[3]);
+        String alias = cmd[4];
+        int[] indexCol;
 
-            }else {
-                List<Condition> conds = new ArrayList<>();
-                int nbcond = (cmd.length-6)/2;
-                String ope;
-                String strCond;
-                String[] valCond;
-
-                for(int i = 0; i<nbcond; i++){
-                    strCond = cmd[7+2*i];
-                    valCond = strCond.split("(<=|>=|<|>|<>|=)");
-                    ope = strCond.substring(valCond[0].length(),strCond.length()-valCond[1].length());
-
-                    if(valCond[0].startsWith(alias)){
-
-                        if(valCond[1].startsWith(alias)) {
-                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
-                                    ope, r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
-
-                        }else{
-                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
-                                    ope, valCond[1]));
-                        }
-                    }else{
-                        conds.add(new Condition(valCond[0],ope,
-                                r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
-                    }
-                }
-
-                RecordPrinter iterator = new RecordPrinter(new SelectOperator(r, conds));
-                iterator.print();
-
+        if(cmd[1].equals("*")){
+            indexCol = new int[r.getNbCol()];
+            for(int i = 0; i<indexCol.length; i++){
+                indexCol[i] = i;
             }
+        }
+        else {
+            String[] strCol = cmd[1].split(",");
+            indexCol = new int[strCol.length];
 
+            for(int i = 0; i<indexCol.length; i++){
+                indexCol[i] = r.getColIndex(strCol[i].replaceAll(alias+"\\.",""));
+            }
+        }
+
+        if(cmd.length == 5){
+            RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
+                    new SelectOperator(r,null), indexCol));
+            iterator.print();
 
         }else {
-            //TODO
+            List<Condition> conds = new ArrayList<>();
+            int nbcond = (cmd.length-5)/2;
+            String ope;
+            String strCond;
+            String[] valCond;
+
+            for(int i = 0; i<nbcond; i++){
+                strCond = cmd[6+2*i];
+                valCond = strCond.split("(<=|>=|<|>|<>|=)");
+                ope = strCond.substring(valCond[0].length(),strCond.length()-valCond[1].length());
+
+                if(valCond[0].startsWith(alias)){
+
+                    if(valCond[1].startsWith(alias)) {
+                        conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
+                                ope, r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
+
+                    }else{
+                        valCond[1] = valCond[1].replaceAll("^\"|\"$", "");
+                        conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
+                                ope, valCond[1]));
+                    }
+                }else{
+                    valCond[0] = valCond[0].replaceAll("^\"|\"$", "");
+                    conds.add(new Condition(valCond[0],ope,
+                            r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
+                }
+            }
+
+            RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
+                    new SelectOperator(r,conds), indexCol));
+            iterator.print();
+
         }
+
     }
 
     /**

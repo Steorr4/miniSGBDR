@@ -204,13 +204,13 @@ public class Relation implements Serializable {
         }
 
         for(int i=0; i<indice; i++){
-            int freeSpace = bm.getConfig().getPagesize() - buffer.getInt(bm.getConfig().getPagesize()-4) -
-                    (buffer.getInt(bm.getConfig().getPagesize()-8)+1)*8; // recup nb octets libres.
-            if (freeSpace >= sizeRecord+8) {
-                buffer.putInt((i+1) * 12,freeSpace-sizeRecord);
-                PageId pid = new PageId(buffer.getInt(i*12+4), buffer.getInt(i*12+8));
+            int offSet = (i+1)*12;
+            int freeSpace = buffer.getInt(offSet);
+            if(freeSpace >= sizeRecord+8){
+                buffer.putInt(offSet,freeSpace-sizeRecord-8);
+                PageId pid = new PageId(buffer.getInt(offSet-8), buffer.getInt(offSet-4));
                 buffer.setPos(0);
-                bm.freePage(headerPageID, false);
+                bm.freePage(headerPageID, true);
                 return pid;
             }
         }

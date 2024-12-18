@@ -42,6 +42,12 @@ public class SelectOperator implements IRecordIterator{
         while ((next = opFils.getNextRecord()) != null) {
             isCondTrue = true;
 
+            if(conds == null){
+                records.add(next);
+                cursor++;
+                return next;
+            }
+
             for (Condition cond : conds) {
                 Type typeCol = relation.getColonnes().get(cond.getIndiceCol1()).getTypeCol();
                 String value1 = next.getVal().get(cond.getIndiceCol1());
@@ -67,7 +73,7 @@ public class SelectOperator implements IRecordIterator{
                             if (Integer.parseInt(value1) >= Integer.parseInt(value2))
                                 isCondTrue = false;
                         } else {
-                            if (value1.compareTo(value2) >= 0)
+                            if (value1.compareTo(value2) < 0)
                                 isCondTrue = false;
                         }
                     }
@@ -76,7 +82,7 @@ public class SelectOperator implements IRecordIterator{
                             if (Integer.parseInt(value1) <= Integer.parseInt(value2))
                                 isCondTrue = false;
                         } else {
-                            if (value1.compareTo(value2) <= 0)
+                            if (value1.compareTo(value2) > 0)
                                 isCondTrue = false;
                         }
                     }
@@ -85,7 +91,7 @@ public class SelectOperator implements IRecordIterator{
                             if (Integer.parseInt(value1) > Integer.parseInt(value2))
                                 isCondTrue = false;
                         } else {
-                            if (value1.compareTo(value2) > 0)
+                            if (value1.compareTo(value2) <= 0)
                                 isCondTrue = false;
                         }
                     }
@@ -94,7 +100,7 @@ public class SelectOperator implements IRecordIterator{
                             if (Integer.parseInt(value1) < Integer.parseInt(value2))
                                 isCondTrue = false;
                         } else {
-                            if (value1.compareTo(value2) < 0)
+                            if (value1.compareTo(value2) >= 0)
                                 isCondTrue = false;
                         }
                     }

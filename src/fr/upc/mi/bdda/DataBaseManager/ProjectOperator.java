@@ -11,7 +11,6 @@ public class ProjectOperator implements IRecordIterator{
     boolean isClosed;
     private int cursor;
     List<Record> records;
-    int[] cols;
     private IRecordIterator opFils; // Selection
 
     public ProjectOperator(SelectOperator select, int[]cols) {

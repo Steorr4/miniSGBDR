@@ -378,4 +378,8 @@ public class Relation implements Serializable {
         }
         throw new RuntimeException("Colonne non existante.");
     }
+
+    public PageId getHeaderPageID() {
+        return headerPageID;
+    }
 }

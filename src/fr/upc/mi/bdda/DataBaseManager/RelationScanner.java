@@ -11,13 +11,11 @@ public class RelationScanner implements IRecordIterator{
     private boolean isClosed;
     private int cursor;
 
-    private Relation relation;
     private List<Record> records;
 
     public RelationScanner(Relation relation){
         isClosed = false;
         cursor=0;
-        this.relation = relation;
         try {
             records = relation.getAllRecords();
         } catch (BufferManager.BufferCountExcededException e) {

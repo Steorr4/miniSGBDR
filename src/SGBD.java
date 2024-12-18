@@ -245,63 +245,95 @@ public class SGBD {
 
     private void processSelectCommand(String[] cmd){
 
-        Relation r = dbm.getTableFromCurrentDatabase(cmd[3]);
-        String alias = cmd[4];
-        int[] indexCol;
-
-        if(cmd[1].equals("*")){
-            indexCol = new int[r.getNbCol()];
-            for(int i = 0; i<indexCol.length; i++){
-                indexCol[i] = i;
-            }
-        }
-        else {
-            String[] strCol = cmd[1].split(",");
-            indexCol = new int[strCol.length];
-
-            for(int i = 0; i<indexCol.length; i++){
-                indexCol[i] = r.getColIndex(strCol[i].replaceAll(alias+"\\.",""));
+        HashMap<String, Relation> relations = new HashMap<>(); // <Alias, Relations>
+        String[] tmp;
+        int cpt = 3;
+        tmp = cmd[cpt+1].split(",");
+        relations.put(tmp[0], dbm.getTableFromCurrentDatabase(cmd[cpt]));
+        while (cpt<cmd.length) {
+            if (tmp.length == 2) {
+                String r = tmp[1];
+                tmp = cmd[cpt].split(",");
+                cpt += 2;
+                relations.put(cmd[cpt], dbm.getTableFromCurrentDatabase(r));
+            }else{
+                break;
             }
         }
 
-        if(cmd.length == 5){
-            RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
-                    new SelectOperator(r,null), indexCol));
-            iterator.print();
+        if(relations.size() == 1) {
 
-        }else {
-            List<Condition> conds = new ArrayList<>();
-            int nbcond = (cmd.length-5)/2;
-            String ope;
-            String strCond;
-            String[] valCond;
+            String alias = cmd[4];
+            Relation r = relations.get(alias);
+            int[] indexCol;
 
-            for(int i = 0; i<nbcond; i++){
-                strCond = cmd[6+2*i];
-                valCond = strCond.split("(<=|>=|<|>|<>|=)");
-                ope = strCond.substring(valCond[0].length(),strCond.length()-valCond[1].length());
+            if (cmd[1].equals("*")) {
+                indexCol = new int[r.getNbCol()];
+                for (int i = 0; i < indexCol.length; i++) {
+                    indexCol[i] = i;
+                }
+            } else {
+                String[] strCol = cmd[1].split(",");
+                indexCol = new int[strCol.length];
 
-                if(valCond[0].startsWith(alias)){
-
-                    if(valCond[1].startsWith(alias)) {
-                        conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
-                                ope, r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
-
-                    }else{
-                        valCond[1] = valCond[1].replaceAll("^\"|\"$", "");
-                        conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias+"\\.","")),
-                                ope, valCond[1]));
-                    }
-                }else{
-                    valCond[0] = valCond[0].replaceAll("^\"|\"$", "");
-                    conds.add(new Condition(valCond[0],ope,
-                            r.getColIndex(valCond[1].replaceAll(alias+"\\.",""))));
+                for (int i = 0; i < indexCol.length; i++) {
+                    indexCol[i] = r.getColIndex(strCol[i].replaceAll(alias + "\\.", ""));
                 }
             }
 
-            RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
-                    new SelectOperator(r,conds), indexCol));
-            iterator.print();
+            if (cmd.length == 5) {
+                RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
+                        new SelectOperator(r, null), indexCol));
+                iterator.print();
+
+            } else {
+                List<Condition> conds = new ArrayList<>();
+                int nbcond = (cmd.length - 5) / 2;
+                String ope;
+                String strCond;
+                String[] valCond;
+
+                for (int i = 0; i < nbcond; i++) {
+                    strCond = cmd[6 + 2 * i];
+                    valCond = strCond.split("(<=|>=|<|>|<>|=)");
+                    ope = strCond.substring(valCond[0].length(), strCond.length() - valCond[1].length());
+
+                    if (valCond[0].startsWith(alias)) {
+
+                        if (valCond[1].startsWith(alias)) {
+                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias + "\\.", "")),
+                                    ope, r.getColIndex(valCond[1].replaceAll(alias + "\\.", ""))));
+
+                        } else {
+                            valCond[1] = valCond[1].replaceAll("^\"|\"$", "");
+                            conds.add(new Condition(r.getColIndex(valCond[0].replaceAll(alias + "\\.", "")),
+                                    ope, valCond[1]));
+                        }
+                    } else {
+                        valCond[0] = valCond[0].replaceAll("^\"|\"$", "");
+                        conds.add(new Condition(valCond[0], ope,
+                                r.getColIndex(valCond[1].replaceAll(alias + "\\.", ""))));
+                    }
+                }
+
+                RecordPrinter iterator = new RecordPrinter(new ProjectOperator(
+                        new SelectOperator(r, conds), indexCol));
+                iterator.print();
+
+            }
+        }else{
+            HashMap<String, int[]> indexCol = new HashMap<>();//<Alias, cols>
+            for (String alias : relations.keySet()){
+
+                int[] cols = new int[relations.get(alias).getNbCol()];
+                for (int i = 0; i < cols.length; i++) {
+                    cols[i] = i;
+                }
+                indexCol.put(alias, cols);
+
+            }
+
+            //TODO
 
         }
 

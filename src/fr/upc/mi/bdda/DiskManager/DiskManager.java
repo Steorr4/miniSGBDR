@@ -161,12 +161,11 @@ public class DiskManager{
 		}
 	}
 
-	//Getter
+	//Getters & Setters
 	public List<PageId> getPagesLibres() {
 		return pagesLibres;
 	}
 	public int getNbFichiers(){ return nbFichiers; }
-
 	public void setNbFichiers(int nbFichiers) {
 		this.nbFichiers = nbFichiers;
 	}

@@ -6,6 +6,9 @@ import fr.upc.mi.bdda.FileAccess.Relation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class ProjectOperator implements IRecordIterator{
 
     boolean isClosed;
@@ -13,6 +16,12 @@ public class ProjectOperator implements IRecordIterator{
     List<Record> records;
     private IRecordIterator opFils; // Selection
 
+    /**
+     * TODO
+     *
+     * @param select
+     * @param cols
+     */
     public ProjectOperator(SelectOperator select, int[]cols) {
         isClosed = false;
         cursor = 0;
@@ -30,6 +39,11 @@ public class ProjectOperator implements IRecordIterator{
         }
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     @Override
     public Record getNextRecord() {
         if (isClosed) throw new RuntimeException("Iterator closed.");
@@ -41,12 +55,18 @@ public class ProjectOperator implements IRecordIterator{
         }
     }
 
+    /**
+     * TODO
+     */
     @Override
     public void close() {
         if (isClosed) throw new RuntimeException("Iterator closed.");
         isClosed = true;
     }
 
+    /**
+     * TODO
+     */
     @Override
     public void reset() {
         if (isClosed) throw new RuntimeException("Iterator closed.");

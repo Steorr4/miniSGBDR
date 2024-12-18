@@ -24,6 +24,12 @@ public class SGBD {
     private BufferManager bm;
     private DBManager dbm;
 
+    /**
+     * TODO
+     *
+     * @param config
+     * @throws IOException
+     */
     private SGBD(DBConfig config) throws IOException {
         this.config = config;
         dm = new DiskManager(config);
@@ -185,6 +191,11 @@ public class SGBD {
         dbm.saveState(dm);
     }
 
+    /**
+     * TODO
+     *
+     * @param cmd
+     */
     private void processInsertCommand(String[] cmd){
 
         if(cmd.length < 5){
@@ -217,6 +228,11 @@ public class SGBD {
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param cmd
+     */
     private void processBulkinsertCommand(String[] cmd){
         switch(cmd[1]){
             case "INTO" -> {
@@ -243,6 +259,11 @@ public class SGBD {
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param cmd
+     */
     private void processSelectCommand(String[] cmd){
 
         HashMap<String, Relation> relations = new HashMap<>(); // <Alias, Relations>
@@ -332,7 +353,7 @@ public class SGBD {
                 indexCol.put(alias, cols);
 
             }
-            //TODO
+
             List<Condition> conds = new ArrayList<>();
             int nbcond = (cmd.length - cpt) / 2;
             String ope;
@@ -366,22 +387,15 @@ public class SGBD {
             }
 
             try {
-        IRecordIterator iterator = new PageOrientedJoinOperator(
-                relations.get(alias.get(0)),
-                relations.get(alias.get(1)),
-                conds,
-                bm
-        );
-        RecordPrinter printer = new RecordPrinter(iterator);
-        printer.print();
-    } catch (BufferManager.BufferCountExcededException e) {
-        throw new RuntimeException(e);
-    }
-
+                IRecordIterator iterator = new PageOrientedJoinOperator(
+                    relations.get(alias.get(0)), relations.get(alias.get(1)),
+                    conds, bm);
+                RecordPrinter printer = new RecordPrinter(iterator);
+                printer.print();
+            } catch (BufferManager.BufferCountExcededException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-
-
     }
 
     /**

@@ -55,24 +55,8 @@ public class CustomBuffer {
     public void putFloat(int pos, float value){
         bb.putFloat(pos, value);
     }
-    public void putFloat(float value){
-        bb.putFloat(value);
-        bb.position(0);
-    }
     public float getFloat(int pos){
         float value = bb.getFloat(pos);
-        bb.position(0);
-        return value;
-    }
-    public void putChar(int pos, char c){
-        bb.putChar(pos, c);
-    }
-    public void putChar(char c){
-        bb.putChar(c);
-        bb.position(0);
-    }
-    public char getChar(int pos){
-        char value = bb.getChar(pos);
         bb.position(0);
         return value;
     }
@@ -98,17 +82,8 @@ public class CustomBuffer {
     }
 
     //Getters & Setters
-    public ByteBuffer getBb() {
-        return bb;
-    }
-    public void setBb(ByteBuffer bb) {
-        this.bb = bb;
-    }
     public PageId getPid() {
         return pid;
-    }
-    public void setPid(PageId pid) {
-        this.pid = pid;
     }
     public int getPin_count() {
         return pin_count;

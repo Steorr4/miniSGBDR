@@ -10,6 +10,9 @@ import fr.upc.mi.bdda.FileAccess.TypeNonParam;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class PageOrientedJoinOperator implements IRecordIterator{
 
     private Relation r1;
@@ -25,6 +28,15 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     private DataPageHoldRecordIterator dhrpi2;
     private PageDirectoryIterator pdi;
 
+    /**
+     * TODO
+     *
+     * @param r1
+     * @param r2
+     * @param conds
+     * @param bm
+     * @throws BufferManager.BufferCountExcededException
+     */
     public PageOrientedJoinOperator(Relation r1, Relation r2, List<Condition>conds, BufferManager bm) throws BufferManager.BufferCountExcededException {
         this.r1 = r1;
         this.r2 = r2;
@@ -36,6 +48,11 @@ public class PageOrientedJoinOperator implements IRecordIterator{
         this.bm = bm;
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     @Override
     public Record getNextRecord() {
         try {
@@ -61,12 +78,12 @@ public class PageOrientedJoinOperator implements IRecordIterator{
 
                 } else {
 
-                    if ((nextR2 = dhrpi2.getNextRecord()) == null) {//Fin de records d'une page de R2
+                    if ((nextR2 = dhrpi2.getNextRecord()) == null) {
                         if ((nextR1 = dhrpi1.getNextRecord()) == null){
                             dhrpi1.reset();
                             nextR1 = dhrpi1.getNextRecord();
                         }
-                        if (cursorR2 < pdi.nbPageR2()) { //S'il reste une page de R2
+                        if (cursorR2 < pdi.nbPageR2()) {
                             dhrpi2.close();
                             pid = pdi.getNextDataPageId();
                             dhrpi2 = new DataPageHoldRecordIterator(r2, pid, bm);
@@ -77,7 +94,7 @@ public class PageOrientedJoinOperator implements IRecordIterator{
                             pid = pdi.getNextDataPageId();
                             if (pid == null) {
                                 dhrpi2.close();
-                                return null; //Toutes les pages ont été parcourues.
+                                return null;
                             }
                             dhrpi1 = new DataPageHoldRecordIterator(r1, pid, bm);
                             nextR1 = dhrpi1.getNextRecord();
@@ -167,11 +184,15 @@ public class PageOrientedJoinOperator implements IRecordIterator{
         }
     }
 
+    /**
+     * TODO
+     */
     @Override
-    public void close() {
+    public void close() {}
 
-    }
-
+    /**
+     * TODO
+     */
     @Override
     public void reset() {
 

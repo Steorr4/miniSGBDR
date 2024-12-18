@@ -184,5 +184,6 @@ public class BufferManager {
         }
     }
 
+    //Getter
     public DBConfig getConfig() {return config;}
 }

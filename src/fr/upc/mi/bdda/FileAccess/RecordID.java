@@ -21,6 +21,7 @@ public class RecordID {
         this.slotIdx = slotIdx;
     }
 
+    //Getters & Setters
     public PageId getPid() {
         return pid;
     }

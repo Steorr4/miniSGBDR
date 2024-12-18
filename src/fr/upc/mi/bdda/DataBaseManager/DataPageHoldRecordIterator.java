@@ -8,6 +8,9 @@ import fr.upc.mi.bdda.FileAccess.Relation;
 
 import java.util.ArrayList;
 
+/**
+ * TODO
+ */
 public class DataPageHoldRecordIterator implements IRecordIterator{
     private int cursor;
     private boolean isClosed;
@@ -16,6 +19,14 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     private BufferManager bm;
     private int nbSlot;
 
+    /**
+     * TODO
+     *
+     * @param r
+     * @param pid
+     * @param bm
+     * @throws BufferManager.BufferCountExcededException
+     */
     public DataPageHoldRecordIterator(Relation r, PageId pid, BufferManager bm) throws BufferManager.BufferCountExcededException {
         this.r = r;
         this.bm = bm;
@@ -26,6 +37,11 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
         cursor = 0;
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     @Override
     public Record getNextRecord() {
         if(cursor < nbSlot){
@@ -39,6 +55,9 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
         }
     }
 
+    /**
+     * TODO
+     */
     @Override
     public void close() {
         if (isClosed) throw new RuntimeException("Iterator closed.");
@@ -46,9 +65,11 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
         bm.freePage(buffer.getPid(),false);
     }
 
+    /**
+     * TODO
+     */
     @Override
     public void reset() {
         cursor = 0;
     }
-
 }

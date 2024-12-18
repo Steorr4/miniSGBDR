@@ -8,12 +8,23 @@ import fr.upc.mi.bdda.FileAccess.Relation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class PageDirectoryIterator{
     private int cursor1;
     private int cursor2;
     private List<PageId> pid1;
     private List<PageId> pid2;
 
+    /**
+     * TODO
+     *
+     * @param r1
+     * @param r2
+     * @param bm
+     * @throws BufferManager.BufferCountExcededException
+     */
     public PageDirectoryIterator(Relation r1, Relation r2, BufferManager bm) throws BufferManager.BufferCountExcededException {
         pid1 = new ArrayList<>();
         pid2 = new ArrayList<>();
@@ -34,6 +45,11 @@ public class PageDirectoryIterator{
         bm.freePage(r2.getHeaderPageID(),false);
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     public PageId getNextDataPageId() {
 
         if (cursor1 == 0) {
@@ -50,12 +66,11 @@ public class PageDirectoryIterator{
         }
     }
 
+    //Getters
     public int nbPageR1(){
         return pid1.size();
     }
-
     public int nbPageR2(){
         return pid2.size();
     }
-
 }

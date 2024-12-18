@@ -162,7 +162,7 @@ public class Relation implements Serializable {
      * TODO
      */
     private void addDataPage(){
-        //TODO : besoin de creer une nouvelle header page si implementation du chainage
+        //TODO : implementer le chainage de headerpage.
         try {
 
             PageId pid = dm.allocPage(); //Alloc new page pid
@@ -350,6 +350,7 @@ public class Relation implements Serializable {
         return records;
     }
 
+    //Getters & Setters
     public String getName() {
         return name;
     }

@@ -9,12 +9,20 @@ import fr.upc.mi.bdda.FileAccess.Relation;
 import java.io.*;
 import java.util.HashMap;
 
+/**
+ * TODO
+ */
 public class DBManager{
     private HashMap<String, Database> databases;
     private Database current;
 
     private transient DBConfig config;
 
+    /**
+     * TODO
+     *
+     * @param config
+     */
     public DBManager(DBConfig config){
         this.current = null;
         this.databases = new HashMap<>();
@@ -22,48 +30,96 @@ public class DBManager{
 
     }
 
+    /**
+     * TODO
+     *
+     * @param name
+     */
     public void createDatabase(String name){
         databases.put(name, new Database(name));
     }
 
+    /**
+     * TODO
+     *
+     * @param name
+     */
     public void setCurrentDatabase(String name){
         current = databases.get(name);
     }
 
+    /**
+     * TODO
+     *
+     * @param table
+     */
     public void addTableToCurrentDatabase(Relation table){
         current.addTable(table);
     }
 
+    /**
+     * TODO
+     *
+     * @param tableName
+     * @return
+     */
     public Relation getTableFromCurrentDatabase(String tableName){
         return current.getTable(tableName);
     }
 
+    /**
+     * TODO
+     *
+     * @param tableName
+     */
     public void removeTableFromCurrentDatabase(String tableName){
         current.removeTable(tableName);
     }
 
+    /**
+     * TODO
+     *
+     * @param dbName
+     */
     public void removeDatabase(String dbName){
         if(dbName.equals(current.name)) current = null;
         databases.remove(dbName);
     }
 
+    /**
+     * TODO
+     */
     public void removeTablesFromCurrentDatabase(){
         current.removeTables();
     }
 
+    /**
+     * TODO
+     */
     public void removeDatabases(){
         current = null;
         databases.clear();
     }
 
+    /**
+     * TODO
+     */
     public void listDatabases(){
         for(String dbName : databases.keySet()) System.out.println(dbName);
     }
 
+    /**
+     * TODO
+     */
     public void listTablesInCurrentDatabase(){
         current.listTables();
     }
 
+    /**
+     * TODO
+     *
+     * @param dm
+     */
     public void saveState(DiskManager dm){
         try {
             int i = 0;
@@ -91,6 +147,12 @@ public class DBManager{
 
     }
 
+    /**
+     * TODO
+     *
+     * @param dm
+     * @param bm
+     */
     public void loadState(DiskManager dm, BufferManager bm){
         try{
             int i = 0;
@@ -134,33 +196,60 @@ public class DBManager{
 
 
     /**
-     *
+     * TODO
      */
     private static class Database implements Serializable {
         private String name;
         private HashMap<String, Relation> tables;
 
+        /**
+         * TODO
+         *
+         * @param name
+         */
         public Database(String name){
             this.name = name;
             this.tables = new HashMap<>();
         }
 
+        /**
+         * TODO
+         *
+         * @param table
+         */
         public void addTable(Relation table){
             tables.put(table.getName(),table);
         }
 
+        /**
+         * TODO
+         *
+         * @param tableName
+         * @return
+         */
         public Relation getTable(String tableName){
             return tables.get(tableName);
         }
 
+        /**
+         * TODO
+         *
+         * @param tableName
+         */
         public void removeTable(String tableName){
             tables.remove(tableName);
         }
 
+        /**
+         * TODO
+         */
         public void removeTables(){
             tables.clear();
         }
 
+        /**
+         * TODO
+         */
         public void listTables(){
             StringBuilder sb;
             for(Relation table : tables.values()){

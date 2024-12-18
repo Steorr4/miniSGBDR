@@ -61,33 +61,32 @@ public class PageOrientedJoinOperator implements IRecordIterator{
 
                 } else {
 
-                    if ((nextR2 = dhrpi2.getNextRecord()) == null) { //Fin de records d'une page de R2
-                        if ((nextR1 = dhrpi1.getNextRecord()) != null) {  //S'il reste des records de la page de R1
-                            dhrpi2.reset();
+                    if ((nextR2 = dhrpi2.getNextRecord()) == null) {//Fin de records d'une page de R2
+                        if ((nextR1 = dhrpi1.getNextRecord()) == null){
+                            dhrpi1.reset();
+                            nextR1 = dhrpi1.getNextRecord();
+                        }
+                        if (cursorR2 < pdi.nbPageR2()) { //S'il reste une page de R2
+                            dhrpi2.close();
+                            pid = pdi.getNextDataPageId();
+                            dhrpi2 = new DataPageHoldRecordIterator(r2, pid, bm);
                             nextR2 = dhrpi2.getNextRecord();
-                        } else { //Fin records d'une page de R1
-                            if (cursorR2 < pdi.nbPageR2()) { //S'il reste une page de R2
-                                dhrpi1.reset();
+                            cursorR2++;
+                        }else{
+                            dhrpi1.close();
+                            pid = pdi.getNextDataPageId();
+                            if (pid == null) {
                                 dhrpi2.close();
-                                pid = pdi.getNextDataPageId();
-                                dhrpi2 = new DataPageHoldRecordIterator(r2, pid, bm);
-                                nextR2 = dhrpi2.getNextRecord();
-                                cursorR2++;
-                            } else { //Toutes les pages de R2 parcourues
-                                dhrpi1.close();
-                                pid = pdi.getNextDataPageId();
-                                if (pid == null) {
-                                    dhrpi2.close();
-                                    return null; //Toutes les pages ont été parcourues.
-                                }
-                                dhrpi1 = new DataPageHoldRecordIterator(r1, pid, bm);
-                                nextR1 = dhrpi1.getNextRecord();
-                                cursorR1++;
-                                pid = pdi.getNextDataPageId();
-                                dhrpi2 = new DataPageHoldRecordIterator(r2, pid, bm);
-                                nextR2 = dhrpi2.getNextRecord();
-                                cursorR2 = 1;
+                                return null; //Toutes les pages ont été parcourues.
                             }
+                            dhrpi1 = new DataPageHoldRecordIterator(r1, pid, bm);
+                            nextR1 = dhrpi1.getNextRecord();
+                            cursorR1++;
+                            dhrpi2.close();
+                            pid = pdi.getNextDataPageId();
+                            dhrpi2 = new DataPageHoldRecordIterator(r2, pid, bm);
+                            nextR2 = dhrpi2.getNextRecord();
+                            cursorR2 = 1;
                         }
                     }
                 }

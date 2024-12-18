@@ -159,7 +159,7 @@ public class Relation implements Serializable {
 
     //TD5 :
     /**
-     * TODO
+     * Ajoute une nouvelle datapage disponible a l'ecriture de tuple de la relation.
      */
     private void addDataPage(){
         //TODO : implementer le chainage de headerpage.
@@ -187,11 +187,11 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * Recupere parmi les pages disponibles, un page avec assez de place pour y inserer un record
      *
-     * @param sizeRecord
-     * @return
-     * @throws BufferManager.BufferCountExcededException
+     * @param sizeRecord la taille du record que l'on souhaite inserer.
+     * @return une pageID ou null si il n'y en a pas de disponible
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     private PageId getFreeDataPage(int sizeRecord) throws BufferManager.BufferCountExcededException {
         CustomBuffer buffer = bm.getPage(headerPageID);
@@ -220,12 +220,12 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * Ecrit un tuple sur une page en memoire.
      *
-     * @param record
-     * @param pid
-     * @return
-     * @throws BufferManager.BufferCountExcededException
+     * @param record le tuple.
+     * @param pid l'identifiant de la page
+     * @return l'identifiant du record
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     private RecordID writeRecordToDataPage(Record record, PageId pid) throws BufferManager.BufferCountExcededException {
 
@@ -251,11 +251,11 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * Retourne la liste de tous les tuples présents sur une page.
      *
-     * @param pid
-     * @return
-     * @throws BufferManager.BufferCountExcededException
+     * @param pid l'identifiant de la page.
+     * @return la liste de records.
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     private List<Record> getRecordsInDataPage(PageId pid) throws BufferManager.BufferCountExcededException {
 
@@ -303,11 +303,11 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * Insert un tuple dans une page disponible.
      *
-     * @param rec
-     * @return
-     * @throws BufferManager.BufferCountExcededException
+     * @param rec le tuple.
+     * @return l'identifiant du record.
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     public RecordID insertRecord(Record rec) throws BufferManager.BufferCountExcededException {
 
@@ -334,10 +334,10 @@ public class Relation implements Serializable {
     }
 
     /**
-     * TODO
+     * Retournes tous les tuples de la relation sous forme de liste.
      *
-     * @return
-     * @throws BufferManager.BufferCountExcededException
+     * @return la liste des records.
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     public List<Record> getAllRecords() throws BufferManager.BufferCountExcededException {
         List<PageId> dataPages = getDataPages();

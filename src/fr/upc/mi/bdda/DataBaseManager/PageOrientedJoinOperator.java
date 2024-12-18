@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO
+ * Classe effectuant les jointures grace a un algorithme de jointure Page-Oriented-Nested-Loop.
+ * <br/>(Voir TP8-A pour comprendre le fonctionnement plus en détail)
  */
 public class PageOrientedJoinOperator implements IRecordIterator{
 
@@ -21,6 +22,7 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     private Record nextR2;
     private int cursorR1;
     private int cursorR2;
+    private boolean isClosed;
 
     private List<Condition> conds;
     private BufferManager bm;
@@ -29,19 +31,20 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     private PageDirectoryIterator pdi;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param r1
-     * @param r2
-     * @param conds
-     * @param bm
-     * @throws BufferManager.BufferCountExcededException
+     * @param r1 une relation R1.
+     * @param r2 une relation R2.
+     * @param conds la liste des conditions.
+     * @param bm une instance de BufferManager.
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein.
      */
     public PageOrientedJoinOperator(Relation r1, Relation r2, List<Condition>conds, BufferManager bm) throws BufferManager.BufferCountExcededException {
         this.r1 = r1;
         this.r2 = r2;
         cursorR1 = cursorR2 = 0;
         this.conds = conds;
+        isClosed = false;
 
         dhrpi1 = dhrpi2 = null;
         pdi = new PageDirectoryIterator(r1,r2,bm);
@@ -49,9 +52,9 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Renvois la jointure des records correspondant aux conditions.
      *
-     * @return
+     * @return un record representant la jointure.
      */
     @Override
     public Record getNextRecord() {
@@ -185,16 +188,17 @@ public class PageOrientedJoinOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
-    public void close() {}
+    public void close() {
+        if (isClosed) throw new RuntimeException("Iterator closed.");
+        isClosed = true;
+    }
 
     /**
-     * TODO
+     * Ne fait rien lol
      */
     @Override
-    public void reset() {
-
-    }
+    public void reset() {}
 }

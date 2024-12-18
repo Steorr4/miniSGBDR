@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO
+ * Classe qui itere les differentes pages de deux relations en suivant un ordre precis afin de
+ * faciliter le Page-Oriented-Nested-Loop-Join.
+ * <br/>(Voir TP8-B1 pour comprendre le fonctionnement plus en détail)
  */
 public class PageDirectoryIterator{
     private int cursor1;
@@ -18,12 +20,12 @@ public class PageDirectoryIterator{
     private List<PageId> pid2;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param r1
-     * @param r2
-     * @param bm
-     * @throws BufferManager.BufferCountExcededException
+     * @param r1 une relation R1.
+     * @param r2 une relation R2.
+     * @param bm une instance du BufferManager.
+     * @throws BufferManager.BufferCountExcededException si le bufferpool est plein au moment d'un appel de buffer.
      */
     public PageDirectoryIterator(Relation r1, Relation r2, BufferManager bm) throws BufferManager.BufferCountExcededException {
         pid1 = new ArrayList<>();
@@ -46,9 +48,9 @@ public class PageDirectoryIterator{
     }
 
     /**
-     * TODO
+     * Itere les pages des relations.
      *
-     * @return
+     * @return la prochaine pid.
      */
     public PageId getNextDataPageId() {
 

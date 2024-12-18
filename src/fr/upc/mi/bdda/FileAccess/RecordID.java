@@ -11,7 +11,7 @@ public class RecordID {
     private int slotIdx; // l'indice de la case ou le record sera rangé
 
     /**
-     * Main contructor TODO (surement à modifier à l'implementation du TD5)
+     * Main contructor
      *
      * @param pid l'ID de sa page.
      * @param slotIdx l'indice de sa case.

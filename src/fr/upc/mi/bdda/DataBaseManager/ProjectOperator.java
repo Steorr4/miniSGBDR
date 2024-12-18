@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO
+ * Iterateur de projection.
+ * <br/>(Voir TP7-B3 pour comprendre le fonctionnement plus en détail)
  */
 public class ProjectOperator implements IRecordIterator{
 
@@ -17,10 +18,10 @@ public class ProjectOperator implements IRecordIterator{
     private IRecordIterator opFils; // Selection
 
     /**
-     * TODO
+     * Main constructor
      *
-     * @param select
-     * @param cols
+     * @param select operateurs de selection.
+     * @param cols indices de colonnes a projeter.
      */
     public ProjectOperator(SelectOperator select, int[]cols) {
         isClosed = false;
@@ -40,9 +41,9 @@ public class ProjectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Renvois le prochain record correspondant a la projection.
      *
-     * @return
+     * @return un tuple.
      */
     @Override
     public Record getNextRecord() {
@@ -56,7 +57,7 @@ public class ProjectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
     public void close() {
@@ -65,7 +66,7 @@ public class ProjectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Remet le cursor a 0.
      */
     @Override
     public void reset() {

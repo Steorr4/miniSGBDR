@@ -9,7 +9,8 @@ import fr.upc.mi.bdda.FileAccess.Relation;
 import java.util.ArrayList;
 
 /**
- * TODO
+ * Iterateur de record qui itére les tuples d'une page à la suite.
+ * <br/>(Voir TP8-B2 pour comprendre le fonctionnement plus en détail)
  */
 public class DataPageHoldRecordIterator implements IRecordIterator{
     private int cursor;
@@ -20,12 +21,12 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     private int nbSlot;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param r
-     * @param pid
-     * @param bm
-     * @throws BufferManager.BufferCountExcededException
+     * @param r une relation.
+     * @param pid un pageID.
+     * @param bm une instance du BufferManager.
+     * @throws BufferManager.BufferCountExcededException si une nouvelle page est appelée et que le bufferpool est plein.
      */
     public DataPageHoldRecordIterator(Relation r, PageId pid, BufferManager bm) throws BufferManager.BufferCountExcededException {
         this.r = r;
@@ -38,9 +39,9 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Recupere le prochain record de la page.
      *
-     * @return
+     * @return le record.
      */
     @Override
     public Record getNextRecord() {
@@ -56,7 +57,7 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
     public void close() {
@@ -66,7 +67,7 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Remet le curseur à 0.
      */
     @Override
     public void reset() {

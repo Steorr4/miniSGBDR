@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * TODO
+ * Main classe du programme, c'est cette classe qui se charge de decouper les commandes SQL
+ * et d'appeler toutes les methodes des couches en dessous.
+ * <br/>(Voir TP6-C pour comprendre le fonctionnement plus en détail)
  */
 public class SGBD {
     private DBConfig config;
@@ -25,10 +27,10 @@ public class SGBD {
     private DBManager dbm;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param config
-     * @throws IOException
+     * @param config une instance de la config
+     * @throws IOException si le chemin de la config est erroné.
      */
     private SGBD(DBConfig config) throws IOException {
         this.config = config;
@@ -46,7 +48,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Principal menu qui se charge de decouper les commandes SQL et d'appeler les methodes correspondantes.
      */
     private void run(){
 
@@ -78,7 +80,7 @@ public class SGBD {
 
 
     /**
-     * TODO
+     * Commande de CREATE.
      *
      * @param cmd
      */
@@ -128,7 +130,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de SET.
      *
      * @param cmd
      */
@@ -145,7 +147,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de DROP.
      *
      * @param cmd
      */
@@ -165,7 +167,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de LIST.
      *
      * @param cmd
      */
@@ -183,7 +185,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de QUIT.
      */
     private void processQuitCommand(){
         bm.flushBuffers();
@@ -192,7 +194,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande d'INSERT.
      *
      * @param cmd
      */
@@ -229,7 +231,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de BULKINSERT.
      *
      * @param cmd
      */
@@ -260,7 +262,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
+     * Commande de SELECT.
      *
      * @param cmd
      */
@@ -399,9 +401,7 @@ public class SGBD {
     }
 
     /**
-     * TODO
-     *
-     * @param args
+     * Main.
      */
     public static void main(String[]args){
         try {

@@ -7,7 +7,8 @@ import fr.upc.mi.bdda.FileAccess.Record;
 import java.util.List;
 
 /**
- * TODO
+ * Scanner scequentiel de relation.
+ * <br/>(Voir TP7-B5 pour comprendre le fonctionnement plus en détail)
  */
 public class RelationScanner implements IRecordIterator{
 
@@ -17,9 +18,9 @@ public class RelationScanner implements IRecordIterator{
     private List<Record> records;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param relation
+     * @param relation une relation R.
      */
     public RelationScanner(Relation relation){
         isClosed = false;
@@ -33,9 +34,9 @@ public class RelationScanner implements IRecordIterator{
 
 
     /**
-     * TODO
+     * Renvois le prochain tuple de la relation.
      *
-     * @return
+     * @return un tuple.
      */
     @Override
     public Record getNextRecord() {
@@ -49,7 +50,7 @@ public class RelationScanner implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
     public void close() {
@@ -58,7 +59,7 @@ public class RelationScanner implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Remet le curseur à 0.
      */
     @Override
     public void reset() {

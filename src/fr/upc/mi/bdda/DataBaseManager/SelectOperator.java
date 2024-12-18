@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO
+ * Operateur de selection.
+ * <br/>(Voir TP7-B3 pour comprendre le fonctionnement plus en détail)
  */
 public class SelectOperator implements IRecordIterator{
 
@@ -23,10 +24,10 @@ public class SelectOperator implements IRecordIterator{
     private IRecordIterator opFils; // RelationScanner
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param r
-     * @param conds
+     * @param r une relation R.
+     * @param conds une liste de conditions a appliquer.
      */
     public SelectOperator(Relation r, List<Condition> conds) {
         isClosed = false;
@@ -38,9 +39,9 @@ public class SelectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Renvois le prochain tuple correcpondant a la selection.
      *
-     * @return
+     * @return un tuple.
      */
     @Override
     public Record getNextRecord() {
@@ -142,7 +143,7 @@ public class SelectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
     public void close() {
@@ -151,7 +152,7 @@ public class SelectOperator implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Remet le curseur à 0.
      */
     @Override
     public void reset() {

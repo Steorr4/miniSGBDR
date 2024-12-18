@@ -1,7 +1,8 @@
 package fr.upc.mi.bdda.DataBaseManager;
 
 /**
- * TODO
+ * Classe permettant de gerer les conditions d'une requte sql de type SELECT.
+ * <br/>(Voir TP7-B1 pour comprendre le fonctionnement plus en détail)
  */
 public class Condition {
     private String op;
@@ -10,11 +11,11 @@ public class Condition {
     private int indiceCol2;
 
     /**
-     * TODO
+     * Constructor.
      *
-     * @param val
-     * @param op
-     * @param indiceCol1
+     * @param val valeur condition.
+     * @param op opérateur.
+     * @param indiceCol1 indice de la colonne d'une relation R.
      */
     public Condition(String val, String op, int indiceCol1) {
         this.val = val;
@@ -23,11 +24,11 @@ public class Condition {
     }
 
     /**
-     * TODO
+     * Constructor.
      *
-     * @param indiceCol1
-     * @param op
-     * @param val
+     * @param indiceCol1 indice de la colonne d'une relation R.
+     * @param op opérateur.
+     * @param val valeur condition.
      */
     public Condition(int indiceCol1, String op, String val) {
         this.val = val;
@@ -36,11 +37,11 @@ public class Condition {
     }
 
     /**
-     * TODO
+     * Constructor.
      *
-     * @param indiceCol1
-     * @param op
-     * @param indiceCol2
+     * @param indiceCol1 indice de la colonne d'une relation R1.
+     * @param op opérateur.
+     * @param indiceCol2 indice de la colonne d'une relation R2.
      */
     public Condition(int indiceCol1, String op, int indiceCol2) {
         this.indiceCol1 = indiceCol1;
@@ -49,12 +50,12 @@ public class Condition {
     }
 
     /**
-     * TODO
+     * Constructor.
      *
-     * @param indiceCol1
-     * @param op
-     * @param indiceCol2
-     * @param invert
+     * @param indiceCol1 indice de la colonne d'une relation R1.
+     * @param op opérateur.
+     * @param indiceCol2 indice de la colonne d'une relation R2.
+     * @param invert booleen pour inverser l'ordre d'une expression.
      */
     public Condition(int indiceCol1, String op, int indiceCol2, boolean invert){
         this.indiceCol1 = indiceCol1;
@@ -67,9 +68,9 @@ public class Condition {
     }
 
     /**
-     * TODO
+     * Permet d'inverser l'ordre d'une expression.
      *
-     * @param op
+     * @param op opérateur.
      * @return
      */
     private String invertOpe(String op){

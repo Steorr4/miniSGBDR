@@ -10,7 +10,8 @@ import java.io.*;
 import java.util.HashMap;
 
 /**
- * TODO
+ * Classe principale qui s'occupe des bases de données.
+ * <br/>(Voir TP6-B pour comprendre le fonctionnement plus en détail)
  */
 public class DBManager{
     private HashMap<String, Database> databases;
@@ -19,9 +20,9 @@ public class DBManager{
     private transient DBConfig config;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param config
+     * @param config une instance de la config.
      */
     public DBManager(DBConfig config){
         this.current = null;
@@ -31,55 +32,55 @@ public class DBManager{
     }
 
     /**
-     * TODO
+     * Creer une nouvelle database.
      *
-     * @param name
+     * @param name le nom de la database.
      */
     public void createDatabase(String name){
         databases.put(name, new Database(name));
     }
 
     /**
-     * TODO
+     * Definie la database courrante.
      *
-     * @param name
+     * @param name le nom de la database.
      */
     public void setCurrentDatabase(String name){
         current = databases.get(name);
     }
 
     /**
-     * TODO
+     * Ajoute une table a la database courrante.
      *
-     * @param table
+     * @param table la relation.
      */
     public void addTableToCurrentDatabase(Relation table){
         current.addTable(table);
     }
 
     /**
-     * TODO
+     * Recupere la table correspondante.
      *
-     * @param tableName
-     * @return
+     * @param tableName nom de la relation.
+     * @return la relation.
      */
     public Relation getTableFromCurrentDatabase(String tableName){
         return current.getTable(tableName);
     }
 
     /**
-     * TODO
+     * Supprime la table de la database courrante.
      *
-     * @param tableName
+     * @param tableName le nom de la relation.
      */
     public void removeTableFromCurrentDatabase(String tableName){
         current.removeTable(tableName);
     }
 
     /**
-     * TODO
+     * Supprime une database.
      *
-     * @param dbName
+     * @param dbName le nom de la database.
      */
     public void removeDatabase(String dbName){
         if(dbName.equals(current.name)) current = null;
@@ -87,14 +88,14 @@ public class DBManager{
     }
 
     /**
-     * TODO
+     * Supprime toutes les tables de la database courrante.
      */
     public void removeTablesFromCurrentDatabase(){
         current.removeTables();
     }
 
     /**
-     * TODO
+     * Supprime toutes les databases
      */
     public void removeDatabases(){
         current = null;
@@ -102,23 +103,23 @@ public class DBManager{
     }
 
     /**
-     * TODO
+     * Affiche toutes les databases existantes.
      */
     public void listDatabases(){
         for(String dbName : databases.keySet()) System.out.println(dbName);
     }
 
     /**
-     * TODO
+     * Affiche toutes les tables de la database courrante.
      */
     public void listTablesInCurrentDatabase(){
         current.listTables();
     }
 
     /**
-     * TODO
+     * Serialize l'etat des database.
      *
-     * @param dm
+     * @param dm l'instance du DiskManager.
      */
     public void saveState(DiskManager dm){
         try {
@@ -148,10 +149,10 @@ public class DBManager{
     }
 
     /**
-     * TODO
+     * Reload l'etat des databases.
      *
-     * @param dm
-     * @param bm
+     * @param dm une instance de DiskManager.
+     * @param bm une instance de BufferManager.
      */
     public void loadState(DiskManager dm, BufferManager bm){
         try{
@@ -196,16 +197,16 @@ public class DBManager{
 
 
     /**
-     * TODO
+     * Classe représentant une database.
      */
     private static class Database implements Serializable {
         private String name;
         private HashMap<String, Relation> tables;
 
         /**
-         * TODO
+         * Main constructor.
          *
-         * @param name
+         * @param name le nom de la database.
          */
         public Database(String name){
             this.name = name;
@@ -213,42 +214,42 @@ public class DBManager{
         }
 
         /**
-         * TODO
+         * Ajoute une table à la database.
          *
-         * @param table
+         * @param table la relation à ajouter.
          */
         public void addTable(Relation table){
             tables.put(table.getName(),table);
         }
 
         /**
-         * TODO
+         * Recupere une relation de la database.
          *
-         * @param tableName
-         * @return
+         * @param tableName le nom de la relation.
+         * @return la relation.
          */
         public Relation getTable(String tableName){
             return tables.get(tableName);
         }
 
         /**
-         * TODO
+         * Supprime une table de la database.
          *
-         * @param tableName
+         * @param tableName le nom de la relation.
          */
         public void removeTable(String tableName){
             tables.remove(tableName);
         }
 
         /**
-         * TODO
+         * Supprime toutes les tables de la database.
          */
         public void removeTables(){
             tables.clear();
         }
 
         /**
-         * TODO
+         * Affiche toutes les tables de la database.
          */
         public void listTables(){
             StringBuilder sb;

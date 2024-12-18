@@ -2,6 +2,10 @@ package fr.upc.mi.bdda.DataBaseManager;
 
 import fr.upc.mi.bdda.FileAccess.Record;
 
+/**
+ * Printeur d'iterateur.
+ * <br/>(Voir TP7-B6 pour comprendre le fonctionnement plus en détail)
+ */
 public class RecordPrinter implements IRecordIterator{
 
     private boolean isClosed;
@@ -9,9 +13,9 @@ public class RecordPrinter implements IRecordIterator{
     IRecordIterator iterator;
 
     /**
-     * TODO
+     * Main constructor.
      *
-     * @param iterator
+     * @param iterator l'iterateur a afficher.
      */
     public RecordPrinter(IRecordIterator iterator) {
         isClosed = false;
@@ -20,9 +24,9 @@ public class RecordPrinter implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Recupere le prochain record retourné par l'iterateur.
      *
-     * @return
+     * @return un record
      */
     @Override
     public Record getNextRecord() {
@@ -30,7 +34,7 @@ public class RecordPrinter implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Ferme l'iterateur.
      */
     @Override
     public void close() {
@@ -39,7 +43,7 @@ public class RecordPrinter implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Remet le curseur à 0.
      */
     @Override
     public void reset() {
@@ -48,7 +52,7 @@ public class RecordPrinter implements IRecordIterator{
     }
 
     /**
-     * TODO
+     * Affiche les tuples de renvoyés par l'itérateur.
      */
     public void print(){
         this.reset();

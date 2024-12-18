@@ -28,7 +28,7 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
 
     @Override
     public Record getNextRecord() {
-        if(cursor <= nbSlot){
+        if(cursor < nbSlot){
             int debRec = buffer.getInt(bm.getConfig().getPagesize()-8*(cursor+2));
             cursor++;
             Record rec = new Record(new ArrayList<>(r.getNbCol()));

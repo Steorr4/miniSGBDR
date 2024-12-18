@@ -65,9 +65,8 @@ public class PageOrientedJoinOperator implements IRecordIterator{
                         if ((nextR1 = dhrpi1.getNextRecord()) != null) {  //S'il reste des records de la page de R1
                             dhrpi2.reset();
                             nextR2 = dhrpi2.getNextRecord();
-                            cursorR2++;
                         } else { //Fin records d'une page de R1
-                            if (cursorR2 <= pdi.nbPageR2()) { //S'il reste une page de R2
+                            if (cursorR2 < pdi.nbPageR2()) { //S'il reste une page de R2
                                 dhrpi1.reset();
                                 dhrpi2.close();
                                 pid = pdi.getNextDataPageId();

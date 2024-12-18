@@ -356,9 +356,9 @@ public class SGBD {
                     ));
                 }else {
                     conds.add(new Condition(
-                            relations.get(alias1).getColIndex(valCond[0].replaceAll(alias1 + "\\.", "")),
-                            ope,
                             relations.get(alias2).getColIndex(valCond[1].replaceAll(alias2 + "\\.", "")),
+                            ope,
+                            relations.get(alias1).getColIndex(valCond[0].replaceAll(alias1 + "\\.", "")),
                             true
                     ));
                 }

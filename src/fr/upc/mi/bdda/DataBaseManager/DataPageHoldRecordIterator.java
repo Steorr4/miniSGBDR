@@ -14,19 +14,20 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     private Relation r;
     private CustomBuffer buffer;
     private BufferManager bm;
+    private int nbSlot;
 
     public DataPageHoldRecordIterator(Relation r, PageId pid, BufferManager bm) throws BufferManager.BufferCountExcededException {
         this.r = r;
         this.bm = bm;
         isClosed = false;
 
+        nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
         buffer = bm.getPage(pid);
         cursor = 0;
     }
 
     @Override
     public Record getNextRecord() {
-        int nbSlot = buffer.getInt(bm.getConfig().getPagesize()-8);
         if(cursor <= nbSlot){
             int debRec = buffer.getInt(bm.getConfig().getPagesize()-8*(cursor+2));
             cursor++;
@@ -46,5 +47,8 @@ public class DataPageHoldRecordIterator implements IRecordIterator{
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        cursor = 0;
+    }
+
 }

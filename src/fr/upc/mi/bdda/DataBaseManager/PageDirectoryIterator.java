@@ -50,4 +50,12 @@ public class PageDirectoryIterator{
         }
     }
 
+    public int nbPageR1(){
+        return pid1.size();
+    }
+
+    public int nbPageR2(){
+        return pid2.size();
+    }
+
 }
